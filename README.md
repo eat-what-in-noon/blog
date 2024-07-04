@@ -103,6 +103,55 @@ frontend/
     └── main.js                                  # Vue.js 应用入口文件
 ```
 
+
+在提供的数据库表结构中，以下是每个字段的功能和作用说明：
+
+### 用户表 (`users`)
+
+- **id**: 用户表的主键，使用 `BIGINT` 类型，自增长，用于唯一标识每个用户。
+- **username**: 用户名，`VARCHAR(20)`，不能为空，用于用户登录和显示。
+- **PASSWORD**: 密码，`VARCHAR(20)`，不能为空，存储用户密码的哈希或加密形式。
+- **ROLE**: 用户角色，`VARCHAR(10)`，表示用户在系统中的权限级别或角色。
+- **provider**: 第三方登录提供者，`VARCHAR(20)`，存储使用第三方登录时的提供者名称（如GitHub、Google）。
+- **provider_id**: 第三方登录提供者的用户ID，`VARCHAR(100)`，存储第三方登录提供者分配的唯一标识符。
+- **email**: 邮箱，`VARCHAR(40)`，唯一，用于用户的电子邮件地址。
+- **phone_number**: 手机号码，`VARCHAR(20)`，可选的，用于用户的联系方式。
+- **gender**: 性别，`VARCHAR(10)`，可选的，存储用户的性别信息。
+- **introduction**: 简介，`TEXT`，可选的，用于存储用户的个人简介或描述。
+
+### 标签表 (`tags`)
+
+- **id**: 标签表的主键，使用 `BIGINT` 类型，自增长，用于唯一标识每个标签。
+- **NAME**: 标签名，`VARCHAR(50)`，不能为空且唯一，用于标识不同的标签。
+
+### 分类表 (`categories`)
+
+- **id**: 分类表的主键，使用 `BIGINT` 类型，自增长，用于唯一标识每个分类。
+- **NAME**: 分类名，`VARCHAR(50)`，不能为空且唯一，用于标识不同的分类。
+
+### 文章表 (`articles`)
+
+- **id**: 文章表的主键，使用 `BIGINT` 类型，自增长，用于唯一标识每篇文章。
+- **title**: 文章标题，`VARCHAR(255)`，不能为空，存储文章的标题信息。
+- **content**: 文章内容，`TEXT`，不能为空，存储文章的具体内容。
+- **created_date**: 创建日期，`TIMESTAMP`，默认为当前时间戳，记录文章的创建时间。
+- **author_id**: 作者ID，`BIGINT`，外键，关联到 `users` 表的 `id` 字段，表示文章的作者。
+- **category_id**: 分类ID，`BIGINT`，外键，关联到 `categories` 表的 `id` 字段，表示文章所属的分类。
+
+### 评论表 (`comments`)
+
+- **id**: 评论表的主键，使用 `BIGINT` 类型，自增长，用于唯一标识每条评论。
+- **content**: 评论内容，`TEXT`，不能为空，存储评论的具体内容。
+- **created_date**: 创建日期，`TIMESTAMP`，默认为当前时间戳，记录评论的创建时间。
+- **author_id**: 作者ID，`BIGINT`，外键，关联到 `users` 表的 `id` 字段，表示评论的作者。
+- **article_id**: 文章ID，`BIGINT`，外键，关联到 `articles` 表的 `id` 字段，表示评论所属的文章。
+
+### 文章标签关联表 (`article_tags`)
+
+- **article_id**: 文章ID，`BIGINT`，外键，关联到 `articles` 表的 `id` 字段，表示文章与标签的关联。
+- **tag_id**: 标签ID，`BIGINT`，外键，关联到 `tags` 表的 `id` 字段，表示文章所拥有的标签。
+
+
 #### 以下内容暂未确定，仅供参考
 
 #### 实现步骤
@@ -135,113 +184,3 @@ frontend/
 8. **文章检索**
    - 实现文章的关键词搜索功能。
 
-#### 关键代码示例
-
-1. **用户实体类**
-```java
-@Entity
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String username;
-    private String password;
-    private String role;
-
-    // Getters and setters
-}
-```
-
-2. **文章实体类**
-```java
-@Entity
-public class Article {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String title;
-    private String content;
-    private LocalDateTime createdDate;
-
-    @ManyToOne
-    private User author;
-
-    @ManyToMany
-    private List<Tag> tags;
-
-    @ManyToOne
-    private Category category;
-
-    // Getters and setters
-}
-```
-
-3. **评论实体类**
-```java
-@Entity
-public class Comment {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String content;
-    private LocalDateTime createdDate;
-
-    @ManyToOne
-    private User author;
-
-    @ManyToOne
-    private Article article;
-
-    // Getters and setters
-}
-```
-
-4. **文章控制器**
-```java
-@Controller
-@RequestMapping("/articles")
-public class ArticleController {
-    @Autowired
-    private ArticleService articleService;
-
-    @GetMapping
-    public String listArticles(Model model) {
-        model.addAttribute("articles", articleService.findAll());
-        return "articleList";
-    }
-
-    @GetMapping("/new")
-    public String showArticleForm(Model model) {
-        model.addAttribute("article", new Article());
-        return "articleForm";
-    }
-
-    @PostMapping
-    public String saveArticle(@ModelAttribute Article article, Principal principal) {
-        articleService.save(article, principal.getName());
-        return "redirect:/articles";
-    }
-
-    // Other methods for updating and deleting articles
-}
-```
-
-5. **评论控制器**
-```java
-@Controller
-@RequestMapping("/comments")
-public class CommentController {
-    @Autowired
-    private CommentService commentService;
-
-    @PostMapping
-    public String saveComment(@ModelAttribute Comment comment, Principal principal) {
-        commentService.save(comment, principal.getName());
-        return "redirect:/articles/" + comment.getArticle().getId();
-    }
-
-    // Other methods for updating and deleting comments
-}
-```
-
-这个项目简单易懂，适合学习Spring Boot的基本功能和技术栈的使用。如果需要更多细节或具体实现，可以进一步讨论。
