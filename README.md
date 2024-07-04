@@ -24,9 +24,6 @@
 5. **文章检索**：
    - 用户可以通过关键词搜索文章。
 
-
-#### 以下内容暂未确定，仅供参考
-
 #### 技术栈(仅供参考)
 1. **Spring Boot** - 后端框架
 2. **Spring Security** - 用户认证和授权
@@ -34,6 +31,54 @@
 4. **element** - 前端模板引擎
 5. **Mysql** - 内存数据库，用于开发和测试
 6. **Vue** - 前端样式
+
+#### 代码结构
+```后端
+src/
+├── main/
+│   ├── java/
+│   │   └── com/
+│   │       └── example/
+│   │           ├── config/
+│   │           │   └── SecurityConfig.java        # Spring Security配置类
+│   │           ├── controller/
+│   │           │   ├── ArticleController.java     # 文章控制器
+│   │           │   ├── CommentController.java     # 评论控制器
+│   │           │   └── UserController.java        # 用户控制器
+│   │           ├── entity/
+│   │           │   ├── Article.java               # 文章实体类
+│   │           │   ├── Comment.java               # 评论实体类
+│   │           │   ├── Tag.java                   # 标签实体类
+│   │           │   ├── Category.java              # 分类实体类
+│   │           │   └── User.java                  # 用户实体类
+│   │           ├── repository/
+│   │           │   ├── ArticleRepository.java     # 文章仓库接口
+│   │           │   ├── CommentRepository.java     # 评论仓库接口
+│   │           │   ├── TagRepository.java         # 标签仓库接口
+│   │           │   ├── CategoryRepository.java    # 分类仓库接口
+│   │           │   └── UserRepository.java        # 用户仓库接口
+│   │           ├── service/
+│   │           │   ├── ArticleService.java        # 文章服务接口
+│   │           │   ├── CommentService.java        # 评论服务接口
+│   │           │   ├── TagService.java            # 标签服务接口
+│   │           │   ├── CategoryService.java       # 分类服务接口
+│   │           │   └── UserService.java           # 用户服务接口
+│   │           └── BlogApplication.java           # Spring Boot 应用入口类
+│   └── resources/
+│       ├── application.properties                # 应用配置文件，包括数据库连接等配置
+│       └── static/
+│           └── (optional)                        # 可选的静态资源文件夹，如图片、CSS等
+└── test/
+    └── java/
+        └── com/
+            └── example/
+                └── BlogApplicationTests.java      # 测试类，用于测试应用功能
+
+```
+
+
+
+#### 以下内容暂未确定，仅供参考
 
 #### 实现步骤
 
@@ -64,55 +109,6 @@
 
 8. **文章检索**
    - 实现文章的关键词搜索功能。
-
-#### 代码结构
-```
-src/
-├── main/
-│   ├── java/
-│   │   └── com/
-│   │       └── example/
-│   │           ├── config/
-│   │           │   └── SecurityConfig.java
-│   │           ├── controller/
-│   │           │   ├── ArticleController.java
-│   │           │   ├── CommentController.java
-│   │           │   └── UserController.java
-│   │           ├── entity/
-│   │           │   ├── Article.java
-│   │           │   ├── Comment.java
-│   │           │   ├── Tag.java
-│   │           │   ├── Category.java
-│   │           │   └── User.java
-│   │           ├── repository/
-│   │           │   ├── ArticleRepository.java
-│   │           │   ├── CommentRepository.java
-│   │           │   ├── TagRepository.java
-│   │           │   ├── CategoryRepository.java
-│   │           │   └── UserRepository.java
-│   │           ├── service/
-│   │           │   ├── ArticleService.java
-│   │           │   ├── CommentService.java
-│   │           │   ├── TagService.java
-│   │           │   ├── CategoryService.java
-│   │           │   └── UserService.java
-│   │           └── BlogApplication.java
-│   └── resources/
-│       ├── templates/
-│       │   ├── login.html
-│       │   ├── register.html
-│       │   ├── articleForm.html
-│       │   ├── articleList.html
-│       │   ├── commentSection.html
-│       │   ├── tagList.html
-│       │   ├── categoryList.html
-│       └── application.properties
-└── test/
-    └── java/
-        └── com/
-            └── example/
-                └── BlogApplicationTests.java
-```
 
 #### 关键代码示例
 
