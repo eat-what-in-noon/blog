@@ -32,8 +32,8 @@
 5. **Mysql** - 内存数据库，用于开发和测试
 6. **Vue** - 前端样式
 
-#### 代码结构
-```后端
+#### 后端代码结构
+```
 src/
 ├── main/
 │   ├── java/
@@ -77,6 +77,31 @@ src/
 ```
 
 
+前端（Vue.js）
+```
+frontend/
+├── public/
+│   └── index.html                               # 主页 HTML 文件
+└── src/
+    ├── assets/                                  # 资源文件夹，如图片、样式表等
+    ├── components/                              # 组件文件夹，存放Vue组件
+    │   ├── ArticleList.vue                      # 文章列表组件
+    │   ├── ArticleForm.vue                      # 文章表单组件
+    │   ├── CommentSection.vue                   # 评论区组件
+    │   ├── TagList.vue                          # 标签列表组件
+    │   └── CategoryList.vue                     # 分类列表组件
+    ├── services/                                # 服务文件夹，用于与后端API通信
+    │   ├── ArticleService.js                    # 文章相关服务
+    │   ├── CommentService.js                    # 评论相关服务
+    │   ├── TagService.js                        # 标签相关服务
+    │   └── CategoryService.js                   # 分类相关服务
+    ├── views/                                   # 视图文件夹，存放页面视图
+    │   ├── Home.vue                             # 主页视图
+    │   ├── Login.vue                            # 登录视图
+    │   └── Register.vue                         # 注册视图
+    ├── App.vue                                  # 根组件
+    └── main.js                                  # Vue.js 应用入口文件
+```
 
 #### 以下内容暂未确定，仅供参考
 
