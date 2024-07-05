@@ -102,6 +102,7 @@ public class UserServiceImpl implements UserService {
         return Map.of("error_message", "success");
     }
 
+    // 注销处理函数具体逻辑
     @Override
     public Map<String, Object> logout(String username) {
         if (username == null) {
@@ -118,6 +119,7 @@ public class UserServiceImpl implements UserService {
         return Map.of("error_message", "success");
     }
 
+    // 用户信息获取处理函数具体逻辑
     @Override
     public Map<String, Object> userInfo() {
         UsernamePasswordAuthenticationToken authentication =
