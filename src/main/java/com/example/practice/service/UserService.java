@@ -14,6 +14,7 @@ public interface UserService {
 
     // 注销处理函数接口
     Map<String, Object> logout(String username);
-
+    
+    // 用户信息查询处理函数接口
     Map<String, Object> userInfo();
 }
