@@ -41,8 +41,8 @@ CREATE TABLE article (
     created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     author_id BIGINT,
     category_id BIGINT,
-    FOREIGN KEY (author_id) REFERENCES users(id),
-    FOREIGN KEY (category_id) REFERENCES categories(id)
+    FOREIGN KEY (author_id) REFERENCES user(id),
+    FOREIGN KEY (category_id) REFERENCES categorie(id)
 );
 
 
@@ -53,8 +53,8 @@ CREATE TABLE comment (
     created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     author_id BIGINT,
     article_id BIGINT,
-    FOREIGN KEY (author_id) REFERENCES users(id),
-    FOREIGN KEY (article_id) REFERENCES articles(id)
+    FOREIGN KEY (author_id) REFERENCES user(id),
+    FOREIGN KEY (article_id) REFERENCES article(id)
 );
 
 
@@ -62,8 +62,8 @@ CREATE TABLE comment (
 CREATE TABLE article_tag (
     article_id BIGINT,
     tag_id BIGINT,
-    FOREIGN KEY (article_id) REFERENCES articles(id),
-    FOREIGN KEY (tag_id) REFERENCES tags(id),
+    FOREIGN KEY (article_id) REFERENCES article(id),
+    FOREIGN KEY (tag_id) REFERENCES tag(id),
     PRIMARY KEY (article_id, tag_id)
 );
 
