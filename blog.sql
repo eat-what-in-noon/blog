@@ -9,12 +9,12 @@ CREATE TABLE user (
     PASSWORD VARCHAR(100) NOT NULL,
     ROLE VARCHAR(10),
     provider VARCHAR(20),
-    provider_id VARCHAR(100),
+    providerId VARCHAR(100),
     email VARCHAR(40) UNIQUE,
-    phone_number VARCHAR(20),
+    phoneNumber VARCHAR(20),
     gender VARCHAR(10),
     introduction TEXT,
-    UNIQUE(provider, provider_id)
+    UNIQUE(provider, providerId)
 );
 
 
@@ -38,11 +38,11 @@ CREATE TABLE article (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,
-    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    author_id BIGINT,
-    category_id BIGINT,
-    FOREIGN KEY (author_id) REFERENCES user(id),
-    FOREIGN KEY (category_id) REFERENCES categorie(id)
+    createdDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    authorId BIGINT,
+    categoryId BIGINT,
+    FOREIGN KEY (authorId) REFERENCES user(id),
+    FOREIGN KEY (categoryId) REFERENCES categorie(id)
 );
 
 
@@ -50,21 +50,21 @@ CREATE TABLE article (
 CREATE TABLE comment (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     content TEXT NOT NULL,
-    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    author_id BIGINT,
-    article_id BIGINT,
-    FOREIGN KEY (author_id) REFERENCES user(id),
-    FOREIGN KEY (article_id) REFERENCES article(id)
+    createdDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    authorId BIGINT,
+    articleId BIGINT,
+    FOREIGN KEY (authorId) REFERENCES user(id),
+    FOREIGN KEY (articleId) REFERENCES article(id)
 );
 
 
 -- 文章标签关联表
 CREATE TABLE article_tag (
-    article_id BIGINT,
-    tag_id BIGINT,
-    FOREIGN KEY (article_id) REFERENCES article(id),
-    FOREIGN KEY (tag_id) REFERENCES tag(id),
-    PRIMARY KEY (article_id, tag_id)
+    articleId BIGINT,
+    tagId BIGINT,
+    FOREIGN KEY (articleId) REFERENCES article(id),
+    FOREIGN KEY (tagId) REFERENCES tag(id),
+    PRIMARY KEY (articleId, tagId)
 );
 
 
