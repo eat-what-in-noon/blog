@@ -1,7 +1,13 @@
 package com.example.practice.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.example.practice.entity.Article;
+import com.example.practice.entity.ArticleLike;
+import com.example.practice.entity.Follow;
 import com.example.practice.entity.User;
+import com.example.practice.mapper.ArticleLikeMapper;
+import com.example.practice.mapper.ArticleMapper;
+import com.example.practice.mapper.FollowMapper;
 import com.example.practice.mapper.UserMapper;
 import com.example.practice.service.UserService;
 import com.example.practice.service.impl.utils.UserDetailsImpl;
@@ -34,8 +40,21 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    // 定义redis数据库存储变量
     @Autowired
     private RedisTemplate redisTemplate;
+
+    // 定义文章点赞关系表操作变量
+    @Autowired
+    private ArticleLikeMapper articleLikeMapper;
+
+    // 定义用户关注关系表操作变量
+    @Autowired
+    private FollowMapper followMapper;
+
+    // 定义文章数据表操作变量
+    @Autowired
+    private ArticleMapper articleMapper;
 
     //登陆处理函数具体逻辑
     @Override
@@ -125,6 +144,64 @@ public class UserServiceImpl implements UserService {
         UserDetailsImpl LoginUser = (UserDetailsImpl) authentication.getPrincipal();
         User user = LoginUser.getUser();
         return Map.of("error_message", "success", "data", user);
+    }
+
+    @Override
+    public Map<String, Object> like(ArticleLike articleLike) {
+        articleLikeMapper.insert(articleLike);
+        return Map.of("error_message", "success");
+    }
+
+    @Override
+    public Map<String, Object> cancelLike(ArticleLike articleLike) {
+        Integer userId = articleLike.getUserId();
+        Integer articleId = articleLike.getArticleId();
+        QueryWrapper<ArticleLike> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_id", userId).eq("article_id", articleId);
+        articleLikeMapper.delete(queryWrapper);
+        return Map.of("error_message", "success");
+    }
+
+    @Override
+    public Map<String, Object> follow(Follow follow) {
+        followMapper.insert(follow);
+        return Map.of("error_message", "success");
+    }
+
+    @Override
+    public Map<String, Object> cancelFollow(Follow follow) {
+        Integer followedId = follow.getFollowedId();
+        Integer followId = follow.getFollowId();
+        QueryWrapper<Follow> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("followed_id", followedId).eq("follow_id", followId);
+        followMapper.delete(queryWrapper);
+        return Map.of("error_message", "success");
+    }
+
+    @Override
+    public Map<String, Object> getLikeNum(Integer id) {
+        QueryWrapper<ArticleLike> queryWrapper = new QueryWrapper<>();
+        List<ArticleLike> articleLikes = articleLikeMapper.selectList(queryWrapper);
+        int cnt = 0;
+        for (ArticleLike articleLike : articleLikes) {
+            Integer articleId = articleLike.getArticleId();
+            QueryWrapper<Article> articleQueryWrapper = new QueryWrapper<>();
+            articleQueryWrapper.eq("id", articleId).eq("author_id", id);
+            Article article = articleMapper.selectOne(articleQueryWrapper);
+            if (article != null) {
+                cnt++;
+            }
+        }
+        return Map.of("error_message", "success", "cnt", cnt);
+    }
+
+    @Override
+    public Map<String, Object> getFollowNum(Integer id) {
+        QueryWrapper<Follow> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("follow_id", id);
+        List<Follow> follows = followMapper.selectList(queryWrapper);
+        return Map.of("error_message", "success", "cnt", follows.size());
+
     }
 
 }

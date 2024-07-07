@@ -42,8 +42,9 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/user/login", "/user/register", "/article/addArticle"
-                        , "/article/addTagToArticle", "/article/addComment", "/tag/addTag").permitAll() //公开
+                .antMatchers("/user/login", "/user/register", "/user/like"
+                        , "/user/cancelLike", "/user/follow", "/user/cancelFollow"
+                        , "/user/getLikeNum", "/user/getFollowNum").permitAll() //公开
                 .antMatchers(HttpMethod.OPTIONS).permitAll()
                 .anyRequest().authenticated();
 

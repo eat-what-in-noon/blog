@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-// 评论数据实体类
+// 评论数据表实体类
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
