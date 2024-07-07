@@ -3,10 +3,7 @@ package com.example.practice.controller;
 import com.example.practice.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -25,5 +22,10 @@ public class TagController {
     public Map<String, Object> addTag(@RequestBody Map<String, String> map) {
         String tagName = map.get("tagName");
         return tagService.addTag(tagName);
+    }
+
+    @GetMapping("/getTag")
+    public Map<String, Object> getTag() {
+        return tagService.getTag();
     }
 }

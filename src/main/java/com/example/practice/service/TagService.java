@@ -8,4 +8,7 @@ public interface TagService {
 
     // 添加标签函数接口
     Map<String, Object> addTag(String tagName);
+
+    // 获取最热门十个标签接口
+    Map<String, Object> getTag();
 }

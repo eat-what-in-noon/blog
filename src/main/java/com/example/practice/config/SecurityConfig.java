@@ -44,7 +44,7 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .antMatchers("/user/login", "/user/register", "/user/like"
                         , "/user/cancelLike", "/user/follow", "/user/cancelFollow"
-                        , "/user/getLikeNum", "/user/getFollowNum").permitAll() //公开
+                        , "/user/getLikeNum", "/user/getFollowNum", "/tag/getTag").permitAll() //公开
                 .antMatchers(HttpMethod.OPTIONS).permitAll()
                 .anyRequest().authenticated();
 
