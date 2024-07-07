@@ -11,9 +11,11 @@ import java.util.Map;
 
 @Service
 public class TagServiceImpl implements TagService {
+    // 定义标签数据表操作变量
     @Autowired
     private TagMapper tagMapper;
 
+    // 添加标签函数具体逻辑
     @Override
     public Map<String, Object> addTag(String tagName) {
         QueryWrapper<Tag> queryWrapper = new QueryWrapper<>();
