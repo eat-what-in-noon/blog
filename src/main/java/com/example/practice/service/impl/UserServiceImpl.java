@@ -45,8 +45,6 @@ public class UserServiceImpl implements UserService {
             Authentication authenticate = authenticationManager.authenticate(authenticationToken);
             // 若合法，则将其取出并赋予用户UserDetailsImpl类中的各种属性，形成loginUser
             UserDetailsImpl loginUser = (UserDetailsImpl) authenticate.getPrincipal();
-
-
             // 单独取loginUser中的用户信息，用于生成JWT-token
             User user = loginUser.getUser();
             String jwt = JwtUtil.createJWT(user.getId().toString());
@@ -126,7 +124,6 @@ public class UserServiceImpl implements UserService {
                 (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImpl LoginUser = (UserDetailsImpl) authentication.getPrincipal();
         User user = LoginUser.getUser();
-
         return Map.of("error_message", "success", "data", user);
     }
 

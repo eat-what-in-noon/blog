@@ -6,20 +6,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-//用户数据实体类
+// 标签数据实体类
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class Tag {
     @TableId(type = IdType.AUTO)
     private Integer id;
-    private String username;
-    private String password;
-    private String role;
-    private String provider;
-    private String provider_id;
-    private String email;
-    private String phone_number;
-    private String gender;
-    private String introduction;
+    private String tagName;
 }

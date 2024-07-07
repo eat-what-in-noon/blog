@@ -1,10 +1,10 @@
 package com.example.practice.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.example.practice.entity.User;
+import com.example.practice.entity.Category;
 import org.apache.ibatis.annotations.Mapper;
 
-//用户数据表操作接口
+// 分类数据表操作接口
 @Mapper
-public interface UserMapper extends BaseMapper<User> {
+public interface CategoryMapper extends BaseMapper<Category> {
 }

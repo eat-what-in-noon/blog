@@ -1,6 +1,7 @@
 package com.example.practice.service;
 
 import com.example.practice.entity.User;
+import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
