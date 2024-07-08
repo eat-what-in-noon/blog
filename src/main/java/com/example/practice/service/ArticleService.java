@@ -2,7 +2,6 @@ package com.example.practice.service;
 
 import com.example.practice.entity.Article;
 import com.example.practice.entity.Comment;
-import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -15,9 +14,6 @@ public interface ArticleService {
     // 为文章添加标签函数接口
     Map<String, Object> addTagToArticle(String tagName, Integer articleId);
 
-    // 添加评论函数接口
-    Map<String, Object> addComment(Comment comment);
-
     // 上传文章封面函数接口
     Map<String, Object> uploadCover(MultipartFile cover) throws IOException;
 
@@ -27,6 +23,9 @@ public interface ArticleService {
     // 根据tag获取文章信息函数接口
     Map<String, Object> getArticleInfoByTag(String tagName);
 
-    // 返回所有文章的id和title函数接口
+    // 返回所有文章的content以外内容函数接口
     Map<String, Object> getAllArticle();
+
+    // 获得文章所有评论的函数接口
+    Map<String, Object> getComment(Integer id);
 }

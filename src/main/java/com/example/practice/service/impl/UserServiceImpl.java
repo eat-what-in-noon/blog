@@ -1,10 +1,7 @@
 package com.example.practice.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.example.practice.entity.Article;
-import com.example.practice.entity.ArticleLike;
-import com.example.practice.entity.Follow;
-import com.example.practice.entity.User;
+import com.example.practice.entity.*;
 import com.example.practice.mapper.ArticleLikeMapper;
 import com.example.practice.mapper.ArticleMapper;
 import com.example.practice.mapper.FollowMapper;
@@ -28,10 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -258,7 +252,7 @@ public class UserServiceImpl implements UserService {
                 cnt++;
             }
         }
-        return Map.of("error_message", "success", "cnt", cnt);
+        return Map.of("error_message", "success", "data", cnt);
     }
 
     @Override
@@ -266,8 +260,21 @@ public class UserServiceImpl implements UserService {
         QueryWrapper<Follow> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("follow_id", id);
         List<Follow> follows = followMapper.selectList(queryWrapper);
-        return Map.of("error_message", "success", "cnt", follows.size());
+        return Map.of("error_message", "success", "data", follows.size());
 
+    }
+
+    // 获取用户写过的所有文章除了content外内容函数具体逻辑
+    @Override
+    public Map<String, Object> getAllArticle(Integer id) {
+        QueryWrapper<Article> queryWrapper = new QueryWrapper<>();
+        List<Article> articles = articleMapper.selectList(queryWrapper);
+        for (Article article : articles) {
+            if (Objects.equals(article.getAuthorId(), id)) {
+                article.setContent(null);
+            }
+        }
+        return Map.of("error_message", "success", "data", articles);
     }
 
 }

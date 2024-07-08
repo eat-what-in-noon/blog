@@ -48,4 +48,7 @@ public interface UserService {
 
     // 获取用户关注人接口
     Map<String, Object> getFollowNum(Integer id);
+
+    // 获取用户写的所有文章接口
+    Map<String, Object> getAllArticle(Integer id);
 }

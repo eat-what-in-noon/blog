@@ -53,14 +53,6 @@ public class ArticleController {
         }
     }
 
-    // 添加评论接口
-    // 接收参数为JSON，要求JSON中包含comment表除id外所有信息
-    // 返回参数为JSON，其中error_message为提示信息，正常运行时为success；发生错误时则是对应错误。无data
-    @PostMapping("/addComment")
-    public Map<String, Object> addComment(@RequestBody Comment comment) {
-        return articleService.addComment(comment);
-    }
-
     // 根据id获取文章信息接口
     // 接收参数为Param，要求Param中包含文章id
     // 返回参数为JSON，其中error_message为提示信息，正常运行时为success；发生错误时则是对应错误。data为id对应文章所有数据
@@ -80,8 +72,16 @@ public class ArticleController {
     // 获取所有文章id和title接口
     // 无接收参数
     // 返回参数为JSON，其中error_message为提示信息，正常运行时为success；发生错误时则是对应错误。data为所有文章的id和title
-    @GetMapping("/getAllArtice")
+    @GetMapping("/getAllArticle")
     public Map<String, Object> getAllArticle() {
         return articleService.getAllArticle();
+    }
+
+    // 获取所有文章所有评论
+    // 接收参数为Param，要求Param中包含评论id信息
+    // 返回参数为JSON，其中error_message为提示信息，正常运行时为success；发生错误时则是对应错误。data为所有评论所有属性
+    @GetMapping("/getComment")
+    public Map<String, Object> getComment(@RequestParam Integer id) {
+        return articleService.getComment(id);
     }
 }

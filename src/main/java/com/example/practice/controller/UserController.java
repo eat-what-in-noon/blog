@@ -137,4 +137,12 @@ public class UserController {
     public Map<String, Object> getFollowNum(@RequestParam Integer id) {
         return userService.getFollowNum(id);
     }
+
+    // 获取用户所有文章id、title接口
+    // 接收参数为Param，要求Param中包含用户id信息
+    // 返回参数为JSON，其中error_message为提示信息，正常运行时为success；发生错误时则是对应错误。data为用户所有文章的id和title的List
+    @GetMapping("/getAllArticle")
+    public Map<String, Object> getAllArticle(@RequestParam Integer id) {
+        return userService.getAllArticle(id);
+    }
 }
