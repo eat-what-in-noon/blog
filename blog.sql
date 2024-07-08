@@ -63,7 +63,7 @@ CREATE TABLE article (
     author_id BIGINT,
     category_id BIGINT,
     FOREIGN KEY (author_id) REFERENCES user(id),
-    FOREIGN KEY (category_id) REFERENCES categorie(id)
+    FOREIGN KEY (category_id) REFERENCES category(id)
 );
 
 
