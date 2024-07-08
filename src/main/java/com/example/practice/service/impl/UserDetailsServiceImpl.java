@@ -17,13 +17,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private UserMapper userMapper;
 
     @Override
-    public UserDetails loadUserByUsername(String loginName) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        if (loginName.contains("@")) {
-            queryWrapper.eq("email", loginName);
-        } else {
-            queryWrapper.eq("username", loginName);
-        }
+        queryWrapper.eq("username", username);
         User user = userMapper.selectOne(queryWrapper);
         if (user == null) {
             throw new RuntimeException("用户不存在");

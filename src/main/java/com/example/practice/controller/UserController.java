@@ -16,21 +16,24 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    // 用户登陆接口
-    // 接收参数为JSON，要求JSON中包含username和password或email和password
+    // 用户密码登陆接口
+    // 接收参数为JSON，要求JSON中包含username和password
     // 返回参数为JSON，其中error_message为提示信息，正常运行时为success；发生错误时则是对应错误。data是当前登陆的用户数据
     @PostMapping("/login")
     public Map<String, Object> login(@RequestBody Map<String, String> map) {
         String username = map.get("username");
         String password = map.get("password");
+        return userService.login(username, password);
+    }
+
+    // 用户邮箱登陆接口
+    // 接收参数为JSON，要求JSON中包含email和checkCode
+    // 返回参数为JSON，其中error_message为提示信息，正常运行时为success；发生错误时则是对应错误。data是当前登陆的用户数据
+    @PostMapping("/loginByEmail")
+    public Map<String, Object> loginByEmail(@RequestBody Map<String, String> map) {
         String email = map.get("email");
-        String loginName;
-        if (username == null) {
-            loginName = email;
-        } else {
-            loginName = username;
-        }
-        return userService.login(loginName, password);
+        String checkCode = map.get("checkCode");
+        return userService.loginByEmail(email, checkCode);
     }
 
     // 用户注册接口
@@ -41,6 +44,17 @@ public class UserController {
         return userService.register(user);
     }
 
+    // 用户忘记密码接口
+    // 接收参数为JSON，要求JSON中必须包含用户的id、忘记密码之后要修改的新密码newPassword以及邮箱验证码checkCode
+    // 返回参数为JSON，其中error_message为提示信息，正常运行时为success；发生错误时则是对应错误。无data
+    @PutMapping("/forgetPassword")
+    public Map<String, Object> changePassword(@RequestBody Map<String, String> map) {
+        String id = map.get("id");
+        String newPassword = map.get("newPassword");
+        String checkCode = map.get("checkCode");
+        return userService.forgetPassword(id, newPassword, checkCode);
+    }
+    
     // 用户注销接口
     // 接收参数为JSON，要求JSON中包含username
     // 返回参数为JSON，其中error_message为提示信息，正常运行时为success；发生错误时则是对应错误。无data
