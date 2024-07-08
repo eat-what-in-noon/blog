@@ -18,5 +18,5 @@ public class Article {
     private String createdDate;
     private Integer authorId;
     private Integer categoryId;
-
+    private String cover;
 }
