@@ -52,22 +52,22 @@ public class TagServiceImpl implements TagService {
         // 将所有的entry加入优先队列
         for (Map.Entry<Integer, Integer> entry : cnt.entrySet()) {
             pq.offer(entry);
-            // 如果优先队列中的元素超过10个，移除出现次数最少的那个
-            if (pq.size() > 10) {
+            // 如果优先队列中的元素超过20个，移除出现次数最少的那个
+            if (pq.size() > 20) {
                 pq.poll();
             }
         }
         // 取出前十多的tagId及其出现次数
-        List<Map.Entry<Integer, Integer>> top10 = new ArrayList<>();
+        List<Map.Entry<Integer, Integer>> top20 = new ArrayList<>();
         while (!pq.isEmpty()) {
-            top10.add(pq.poll());
+            top20.add(pq.poll());
         }
         // 因为优先队列是最小堆，所以需要反转列表顺序，使得出现次数最多的在前面
-        Collections.reverse(top10);
+        Collections.reverse(top20);
 
         List<String> top10TagName = new ArrayList<>();
         // 返回结果
-        for (Map.Entry<Integer, Integer> entry : top10) {
+        for (Map.Entry<Integer, Integer> entry : top20) {
             QueryWrapper<Tag> tagQueryWrapper = new QueryWrapper<>();
             tagQueryWrapper.eq("id", entry.getValue());
             top10TagName.add(tagMapper.selectOne(tagQueryWrapper).getTagName());

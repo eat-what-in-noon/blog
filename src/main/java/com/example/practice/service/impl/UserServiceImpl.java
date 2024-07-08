@@ -23,10 +23,15 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -165,6 +170,19 @@ public class UserServiceImpl implements UserService {
             return Map.of("error_message", "验证码错误，请重新输入");
         }
 
+    }
+
+    // 上传头像处理函数具体逻辑
+    @Override
+    public Map<String, Object> uploadAvatar(MultipartFile avatar) throws IOException {
+        String uploadPath = "C:/Users/Joker/Desktop/JavaSpace/practice/src/main/resources/static/avatar/";
+        String originalFilename = avatar.getOriginalFilename();
+        String suffix = originalFilename.substring(originalFilename.lastIndexOf("."));
+        String fileName = UUID.randomUUID() + suffix;
+        String savePath = uploadPath + fileName;
+        File dest = new File(savePath);
+        avatar.transferTo(dest);
+        return Map.of("error_message", "success", "data", fileName);
     }
 
     // 注销处理函数具体逻辑
