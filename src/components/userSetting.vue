@@ -24,7 +24,7 @@
               <el-radio v-model="userForm.gender" label="woman">女</el-radio>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" style="position:absolute;left:20%">提交修改</el-button>
+                <el-button type="primary" style="position:absolute;left:0%;width:60%">提交修改</el-button>
             </el-form-item>
         </el-form>
     </div>
@@ -83,16 +83,16 @@ export default {
     position: relative;
     width:90%;
     height:85%;
-    background-color: rgba(240, 248, 255, 0.74);
-    opacity: 1;
+    background-color: rgb(212, 185, 185);
+    opacity: 0.9;
     border-radius:15px;
+    z-index: 100;
 }
 .userform{
     position: absolute;
     width:50%;
     height:100%;
-
-    background-color: rgba(240, 248, 255, 0.74);
+    background-color: rgb(241, 239, 239);
     border-radius:15px;
 }
 </style>

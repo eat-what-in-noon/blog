@@ -3,14 +3,14 @@
       <h1 style="position: relative;margin-left: -270px; top: 20px;">登录</h1>
       <el-tabs v-model="activeTab" @tab-click="handleTabClick" class="custom-tabs">
         <el-tab-pane label="密码登录" name="password"></el-tab-pane>
-        <el-tab-pane label="第三方登录" name="provider"></el-tab-pane>
+        <el-tab-pane label="邮箱登录" name="provider"></el-tab-pane>
       </el-tabs>
       <div class="login-form" v-if="activeTab === 'password'">
-        <el-form ref="login1Form" :model="login1Form" :rules="rules" label-width="80px">
-          <el-form-item prop="loginName">
-              <el-input id="username" placeholder="用户名/邮箱" v-model="login1Form.loginName" readonly onfocus="this.removeAttribute('readonly');" auto-complete="off" style="width: 300px;"></el-input>
+        <el-form ref="login1Form" :model="login1Form" :rules="rules1" label-width="80px">
+          <el-form-item prop="username" :rules="rules1.username">
+              <el-input id="username" placeholder="用户名/邮箱" v-model="login1Form.username" readonly onfocus="this.removeAttribute('readonly');" auto-complete="off" style="width: 300px;"></el-input>
           </el-form-item>
-          <el-form-item prop="password">
+          <el-form-item prop="password" :rules="rules1.password">
               <el-input id="password" placeholder="密码" type="password" readonly onfocus="this.removeAttribute('readonly');" v-model="login1Form.password" auto-complete="off" style="width: 300px;"></el-input>
               <el-button size="mini" @click="$emit('show-password')" style="position: absolute;border:none;background-color: white;outline: none;left:73%;top:7px">忘记密码</el-button>
             </el-form-item>
@@ -21,18 +21,16 @@
     </div>
 
     <div class="provider-form" v-if="activeTab === 'provider'">
-        <el-form ref="login2Form" :model="login2Form" label-width="80px">
-          <el-form-item>
-            <el-button class="qq_login" @click="quickLogin('QQ登录成功')">
-              <img id="qq_icon" class="qq_icon" src="@/assets/qq.png" alt="qq_login">
-              <span id="description_qq_login">QQ登录</span>
-            </el-button>
+        <el-form ref="login2Form" :model="login2Form" :rules="rules2" label-width="80px">
+          <el-form-item prop="email" :rules="rules2.email">
+            <el-input id="email" placeholder="邮箱" v-model="login2Form.email" readonly onfocus="this.removeAttribute('readonly');" auto-complete="off" style="width: 300px;"></el-input>
+          </el-form-item>
+          <el-form-item prop="checkNum" :rules="rules2.checkNum">
+            <el-input id="checkNum" placeholder="验证码" readonly onfocus="this.removeAttribute('readonly');" v-model="login2Form.checkNum" auto-complete="off" style="width: 300px;"></el-input>
+            <el-button size="mini" @click="getCheckNum" style="position: absolute;border:none;background-color: white;outline: none;left:73%;top:7px">验证码</el-button>
           </el-form-item>
           <el-form-item>
-            <el-button class="wechat_login" @click="quickLogin('微信登录成功')">
-              <img id="wechat_icon" class="vx_icon" src="@/assets/vx.png" alt="wechat_login">
-              <span id="description_wechat_login">微信登录</span>
-            </el-button>
+              <el-button type="primary"  size="mini" style="width: 300px;height: 50px;font-size: 20px;margin-top: 10px;"  @click="onlogin()">登录</el-button>
           </el-form-item>
         </el-form>  
     </div>
@@ -51,17 +49,29 @@ export default {
   data() {
           return {
               login1Form: {
-                  loginName: '', //用户登录时使用的账号，可以为username也可以为邮箱
+                  username: '', //用户登录时使用的账号，可以为username也可以为邮箱
                   password: ''  //密码
+              },
+              login2Form:{
+                email:'',
+                checkNum:''
               },
               activeTab:'password',//当前显示哪种登录方式
               //验证规则
-                rules: {
-                  loginName: [
+                rules1: {
+                  username: [
                         { required: true, message: '请输入账号', trigger: 'blur' }
                     ],
                     password: [
                         { required: true, message: '请输入密码', trigger: 'blur' }
+                    ]
+                },
+                rules2: {
+                  email: [
+                        { required: true, message: '请输入邮箱', trigger: 'blur' }
+                    ],
+                  checkNum: [
+                        { required: true, message: '请输入验证码', trigger: 'blur' }
                     ]
                 }
             };
@@ -84,13 +94,13 @@ export default {
     */
     onlogin(){
       const user = {
-        username:this.login1Form.loginName, 
+        username:this.login1Form.username, 
         password:this.login1Form.password,
       }
       this.axios({
         method:"post",
         url:"/user/login",
-        data:JSON.stringify(user),
+        data:user,
         headers: {
           'Content-Type': 'application/json'
         }
@@ -119,15 +129,29 @@ export default {
       });
     },
 
-    handleTabClick(tab){
-    if (tab.name === 'provider') {
-      this.$refs.login1Form.clearValidate(); // 清除密码登录表单的验证信息
-    } else if (tab.name === 'password') {
-      this.$nextTick(() => {
-        this.$refs.login1Form.validate(); // 在切换到密码登录页时重新触发表单验证
-      });
-    }
-      this.activeTab = tab.name; // 更新当前活动标签页
+    handleTabClick(tab) {
+      if (tab.name === 'provider') {
+        // 清除密码登录表单的验证信息
+        this.$refs.login1Form.clearValidate();
+        // 使用 $nextTick 确保在 DOM 更新完成后再触发验证
+        this.$nextTick(() => {
+          // 在切换到邮箱登录页时重新触发表单验证
+          this.$refs.login2Form.validate();
+        });
+      } else if (tab.name === 'password') {
+        // 清除邮箱登录表单的验证信息
+        this.$refs.login2Form.clearValidate();
+        // 使用 $nextTick 确保在 DOM 更新完成后再触发验证
+        this.$nextTick(() => {
+          // 在切换到密码登录页时重新触发表单验证
+          this.$refs.login1Form.validate();
+        });
+      }
+      // 更新当前活动标签页
+      this.activeTab = tab.name;
+    },
+    getCheckNum(){
+
     }
   },
   
@@ -159,6 +183,11 @@ export default {
   margin-top:20px;
 }
 
+.provider-form{
+  position: absolute;
+  margin-top:20px;
+}
+
 >>> .el-tabs__nav-wrap::after {
   position: static !important;
 }
@@ -173,24 +202,4 @@ export default {
   margin-left:80px;
 }
 
-.qq_login,.wechat_login{
-    position: relative;
-    text-align: center;
-    width: 300px;
-    height: 50px;
-    margin-left: -100px;
-    margin-top:20px;
-    border: none;
-    border-radius: 10px;
-    overflow:hidden;
-    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)
-  }
-
-  .qq_icon,.vx_icon{
-    position:absolute;
-    left:5px;
-    top:10px;
-    height: 33px;
-    width:35px;
-  }
 </style>

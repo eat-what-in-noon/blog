@@ -37,9 +37,9 @@
      <video autoplay muted loop id="background-video">
           <source src="@/assets/background.mp4" type="video/mp4">
           Your browser does not support the video tag.
-        </video>
+      </video>
 
-        <div class="welcome">
+        <div v-if="userHidden" class="welcome">
           <div style="position: absolute;">
               <h1>欢迎来到博客平台</h1>
               <h2>123456879456654654654</h2>
@@ -47,16 +47,24 @@
           <!--<img style="position:absolute; width: 150px;height:150px;left: 70%;" src="@/assets/reading.png" alt="插画">-->
         </div>
 
-     <userSetting v-if="!userHidden" class="userSetting" />
-     <div v-if="userHidden" class="main" @scroll="handleScroll">
+     <userSetting v-if="showUserSetting" class="userSetting" />
+     <div v-if="showMain" class="main" @scroll="handleScroll">
       <div id="check" style="position: absolute;top:0;height:60%;width:100%"></div>
-        <div v-if="userHidden" class="container">
+        <div  class="container">
           <div class="user-style" ref="userInfo">
-            <userInfo v-if="userHidden"/>
+            <userInfo/>
           </div>
-          <div ref="articleList" class="article-list">
-            <Article v-for="article in articles"  :key="article.id" :article="article" />
+
+          <div class="tags-style" ref="tags">
+             <tags @clickTag="showFilterArticles"/>
           </div>
+          
+          <div ref="filter_articles" v-if="showFilter" class="filter-article-list">
+            <filterArticle  v-for="filter_article in filter_articles"  :key="filter_article.id" :filter_article="filter_article"/>
+          </div>
+            <div v-if="showAllarticle" ref="articles" class="article-list">
+              <Article v-for="article in articles"  :key="article.id" :article="article" />
+            </div>
         </div>
     </div>
   </div>
@@ -67,21 +75,28 @@ import axios from 'axios';
 import userInfo from '../components/userInfo.vue';
 import userSetting from '../components/userSetting.vue';
 import Article from '../components/Article';
+import tags from '../components/tags'
+import filterArticle from '../components/filterArticle'
 export default{
 name:'MainFrame',
 components:{
   userInfo,
   userSetting,
-  Article
+  Article,
+  filterArticle,
+  tags,
 },
 data(){
     return{
       userData:null,
-      userHidden:'true',
+      showUserSetting:false,
+      showAllarticle:true,
+      showMain:true,
+      showFilter: false, // 控制是否显示 filterArticle 组件
       articles: [
         {
           id:'1',
-          title:"test1test1test1test1test1",
+          title:"test1test1test1test1test1asdasd",
           text:"这是一段测试文字，这里是article组件的内容，内容是测试一下测试一下测试一下测试一下测试一下测试一下测试一下测试一下测试一下测试一下测试一下测试一下测试一下测试一下测试一下测试一下测试一下测试一下",
           tags:["vue开发","测试标签"],
           author:"lh"
@@ -122,7 +137,40 @@ data(){
           title:"test3",
           text:"这是一段测试文字，这里是article组件的内容，内容是啊八八八八八八八八吧阿八八八"
         },
-
+        {
+          id:'3',
+          title:"test3",
+          text:"这是一段测试文字，这里是article组件的内容，内容是啊八八八八八八八八吧阿八八八"
+        },{
+          id:'3',
+          title:"test3",
+          text:"这是一段测试文字，这里是article组件的内容，内容是啊八八八八八八八八吧阿八八八"
+        },{
+          id:'3',
+          title:"test3",
+          text:"这是一段测试文字，这里是article组件的内容，内容是啊八八八八八八八八吧阿八八八"
+        },
+      ],
+      filter_articles:[
+        {
+          id:'1',
+          title:"test1test1test1test1test1",
+          text:"这是一段测试文字，这里是article组件的内容，内容是测试一下测试一下测试一下测试一下测试一下测试一下测试一下测试一下测试一下测试一下测试一下测试一下测试一下测试一下测试一下测试一下测试一下测试一下",
+          tags:["vue开发","测试标签"],
+          author:"lh"
+        },
+        {
+          id:'2',
+          title:"test2",
+          text:"这是一段测试文字，这里是article组件的内容，内容是啊八八八八八八八八吧阿八八八",
+          tags:["vue开发","扬州实习"]
+        },
+        {
+          id:'3',
+          title:"test3",
+          text:"这是一段测试文字，这里是article组件的内容，内容是测试一下",
+          tags:["vue开发","哈哈哈"],
+        },
       ]
     }
 },
@@ -131,13 +179,11 @@ created(){
           baseURL: 'http://localhost:8090', // 后端 API 的地址
           timeout: 5000 // 请求超时时间
     });
-  
 },
 methods:{
     quit(){
       const storedUser = localStorage.getItem("userInfo");
       const user = JSON.parse(storedUser);
-      
       this.axios({
         method:"post",
         url:"/user/logout",
@@ -162,27 +208,45 @@ methods:{
       });
     },
     show_userSetting(){
-      this.userHidden = false;
+      this.showMain = false;
+      this.showUserSetting = true;
+      this.showAllarticle = false;
+      this.showFilter = false;
     },
     goToMainFrame(){
-      this.userHidden = true;
+      this.showMain = true;
+      this.showAllarticle = true;
+      this.showFilter = false;
+      this.showUserSetting = false;
+    },
+    showArticles() {
+      this.showAllarticle = true;
+      this.showFilter = false; // 确保显示全部文章时隐藏 filterArticle
+    },
+    showFilterArticles() {
+      //this.filter_articles = this.articles.filter(article => article.tags.includes(tag));
+      this.showFilter = true; // 显示 filterArticle 组件
+      this.showAllarticle = false;
     },
     handleScroll() {
       const checkElement = document.getElementById('check');
       const checkRect = checkElement.getBoundingClientRect();
       console.log(checkRect.bottom);
       const userInfo = this.$refs.userInfo;
+      const tags = this.$refs.tags;
       const articleList = this.$refs.articleList;
       
       if (checkRect.bottom < 0) {
         // 当 check 不可见时，固定 userInfo，滚动 articleList
         userInfo.style.position = 'fixed';
-        //userInfo.style.top = '8%'; // 根据实际需求调整位置
+        tags.style.position = 'fixed';
         //articleList.style.marginTop = '20%'; // 确保 articleList 不会被 userInfo 覆盖
       } else {
         // 当 check 可见时，恢复 userInfo 原位置
         userInfo.style.position = 'absolute';
-        userInfo.style.top = '10%';
+        userInfo.style.top = '50px';
+        tags.style.position = 'absolute';
+        tags.style.top = '320px';
       }
     }
 }
@@ -201,10 +265,16 @@ methods:{
 
 .user-style{
   position: absolute;
-  left:2%;
-  top:10%;
+  left:1%;
+  top:50px;
   width:100%;
   height: 100%;
+}
+
+.tags-style{
+  position: absolute;
+  left:1%;
+  top:320px;
 }
 
 .main{
@@ -213,7 +283,7 @@ methods:{
   height: 100%;  
   overflow-y: auto; 
   -ms-overflow-style: none; 
-  background-color: #ffffff;
+  background-color: #dbcece;
   top:0;
 }
 .main::-webkit-scrollbar {
@@ -221,12 +291,12 @@ methods:{
 }
 
 .container{
-  position: absolute;
+  position: relative;
   width:100%;
-  height:100%;
+  /*height:100%;*/
   top:60%;
   left:0;
-  background-color: white;
+  background-color: rgb(228, 216, 216);
   z-index: 2;
 }
 .background::-webkit-scrollbar {
@@ -239,7 +309,7 @@ methods:{
   top: 0;
   left: 0;
   width: 100%;
-  height: 60%;
+  height: 100%;
   object-fit: cover; /* 或者使用 contain，根据需要选择 */
   z-index: 1;
 }
@@ -289,15 +359,25 @@ methods:{
   }
 
   .article-list{
-    position: absolute;
-    top: 10%;
+    position: relative;
+    padding-top: 50px;
+    padding-bottom:20px;
     left:25%;
     width: 70%;
-    height: 100%;
+    height: auto;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     grid-gap: 40px; 
     grid-auto-rows: 300px;
+  }
+
+  .filter-article-list{
+    position: relative;
+    padding-top: 50px;
+    left:32%;
+    width: 70%;
+    height: auto;
+    padding-bottom:20px;
   }
 
   .welcome{

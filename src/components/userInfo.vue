@@ -4,28 +4,25 @@
             <img class="avator" src="@/assets/qq.png" alt="头像">
             <div style="position:absolute;top:30%;left:50%;transform: translate(-50%);">
                 <div class="username" style="font-size:18px">{{ this.username }}</div>
-                <div style="position:absolute;top:150%;width:100%">
+                <div style="position:absolute;left:-80%;top:150%;width:100%;height:100%">
                     <img src="@/assets/email.png" alt="邮箱" style="position:absolute;width:25px;left:-80%;height: 25px;margin-top: 6px;">
-                    <div class="email" style="position:absolute; font-size: 14px; left:-15%;margin-top: 10px;">{{ this.email }}</div>
+                    <div class="email" style="position:absolute; font-size: 14px; left:-5%;margin-top: 10px;">{{ this.email }}</div>
                 </div>
             </div>
         </div>
         <div class="information">
-            <div style="position: absolute;top: 60%;left:12%">
+            <div style="position: absolute;top: 70%;left:12%">
                 <div >文章</div>
                 <div>10</div>
             </div>
-            <div style="position: absolute;top: 60%;left:45%">
+            <div style="position: absolute;top: 70%;left:45%">
                 <div>标签</div>
                 <div>5</div>
             </div>
-            <div style="position: absolute;top: 60%;left:78%">
+            <div style="position: absolute;top: 70%;left:78%">
                 <div >分类</div>
                 <div style="font-size: medium;">2</div>
             </div>
-        </div>
-        <div>
-            <el-button type="success" style="position: absolute;top:80%;width:76%;left:12%;opacity: 1;text-align: center;">关注我！</el-button>
         </div>
     </div>
 </template>
@@ -56,9 +53,9 @@ export default{
 <style scoped>
 .main{
     position: relative;
-    width: 18%;
-    height: 45%;
-    background: linear-gradient(rgb(198, 174, 209), blue); /* 标准的语法 */
+    width: 300px;
+    height: 250px;
+    background-color: rgb(232, 236, 236);
     /*background-color: rgba(240, 248, 255, 0.74);*/
     opacity: 1;
     border-radius:15px;
