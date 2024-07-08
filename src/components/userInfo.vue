@@ -58,9 +58,18 @@ export default{
     position: relative;
     width: 18%;
     height: 45%;
-    background-color: rgba(240, 248, 255, 0.74);
+    background: linear-gradient(rgb(198, 174, 209), blue); /* 标准的语法 */
+    /*background-color: rgba(240, 248, 255, 0.74);*/
     opacity: 1;
     border-radius:15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* 设置阴影效果 */
+    transition: box-shadow 0.3s ease; /* 添加过渡效果 */
+    transition: transform 0.3s ease; /* 添加过渡效果 */
+}
+
+.main:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6); /* 悬浮时增加阴影效果 */
+    transform: scale(1.02); /* 悬浮时微微放大 */
 }
 
 .avator{

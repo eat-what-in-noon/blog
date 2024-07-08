@@ -1,13 +1,28 @@
 <template>
   <div class="background">
-    <video autoplay muted loop id="background-video">
-      <source src="@/assets/background.mp4" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
-     <div class="header">
+    <div class="header">
+      <div class="home">
+        <el-button @click="goToMainFrame" style="background-color:#ffffff00;border: none; width: 40px; height:30px;margin-left: -40px;" >
+            <img src="@/assets/home.png" alt="首页" style="width:25px;height: 25px;margin-top: 1px;">
+            <span style="position: absolute;margin-top: 8px;margin-left: 5px; font-weight: 1000;">首页</span>
+        </el-button>
+      </div>
+
+      <div class="search">
+        <el-button style="background-color:#ffffff00;border: none; width: 40px; height:30px;margin-left: -40px;" >
+            <img src="@/assets/search.png" alt="搜索" style="width:25px;height: 25px;margin-top: 1px;">
+            <span style="position: absolute;margin-top: 8px;margin-left: 5px; font-weight: 1000;">搜索</span>
+          </el-button>
+      </div>
+      <div class="write">
+        <el-button style="background-color:#ffffff00;border: none; width: 40px; height:30px;margin-left: -40px;" >
+            <img src="@/assets/write.png" alt="写博客" style="width:25px;height: 25px;margin-top: 1px;">
+            <span style="position: absolute;margin-top: 8px;margin-left: 5px; font-weight: 1000;">写博客</span>
+          </el-button>
+      </div>
       <div class="personal-information">  
         <el-dropdown trigger="click">
-          <el-button style="background-color:#75a694;border: none; width: 40px; height:30px;margin-left: -40px;" >
+          <el-button style="background-color:#ffffff00;border: none; width: 40px; height:30px;margin-left: -40px;" >
             <img src="@/assets/my.png" alt="我的" style="width:25px;height: 25px;margin-top: 1px;">
             <span style="position: absolute;margin-top: 8px;margin-left: 5px; font-weight: 1000;">我的</span>
           </el-button>
@@ -17,39 +32,33 @@
         </el-dropdown-menu>
         </el-dropdown>
       </div>
-      <div class="home">
-        <el-button @click="goToMainFrame" style="background-color:#75a694;border: none; width: 40px; height:30px;margin-left: -40px;" >
-            <img src="@/assets/home.png" alt="首页" style="width:25px;height: 25px;margin-top: 1px;">
-            <span style="position: absolute;margin-top: 8px;margin-left: 5px; font-weight: 1000;">首页</span>
-        </el-button>
-      </div>
-
-      <div class="search">
-        <el-button style="background-color:#75a694;border: none; width: 40px; height:30px;margin-left: -40px;" >
-            <img src="@/assets/search.png" alt="搜索" style="width:25px;height: 25px;margin-top: 1px;">
-            <span style="position: absolute;margin-top: 8px;margin-left: 5px; font-weight: 1000;">搜索</span>
-          </el-button>
-      </div>
-      <div class="write">
-        <el-button style="background-color:#75a694;border: none; width: 40px; height:30px;margin-left: -40px;" >
-            <img src="@/assets/write.png" alt="写博客" style="width:25px;height: 25px;margin-top: 1px;">
-            <span style="position: absolute;margin-top: 8px;margin-left: 5px; font-weight: 1000;">写博客</span>
-          </el-button>
-      </div>
      </div>   
-     
-     <userInfo v-if="userHidden" class="user"/>
-     <userSetting v-if="!userHidden" class="userSetting" />
-      <div class="welcome">
+
+     <video autoplay muted loop id="background-video">
+          <source src="@/assets/background.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+
+        <div class="welcome">
           <div style="position: absolute;">
               <h1>欢迎来到博客平台</h1>
               <h2>123456879456654654654</h2>
           </div>
           <!--<img style="position:absolute; width: 150px;height:150px;left: 70%;" src="@/assets/reading.png" alt="插画">-->
-      </div>
-      <div class="artical-list">
-        <Article v-for="article in articles" :key="article.id" :article="article" />
-      </div>
+        </div>
+
+     <userSetting v-if="!userHidden" class="userSetting" />
+     <div v-if="userHidden" class="main" @scroll="handleScroll">
+      <div id="check" style="position: absolute;top:0;height:60%;width:100%"></div>
+        <div v-if="userHidden" class="container">
+          <div class="user-style" ref="userInfo">
+            <userInfo v-if="userHidden"/>
+          </div>
+          <div ref="articleList" class="article-list">
+            <Article v-for="article in articles"  :key="article.id" :article="article" />
+          </div>
+        </div>
+    </div>
   </div>
 </template>
 
@@ -72,16 +81,48 @@ data(){
       articles: [
         {
           id:'1',
-          text:"test1",
+          title:"test1test1test1test1test1",
+          text:"这是一段测试文字，这里是article组件的内容，内容是测试一下测试一下测试一下测试一下测试一下测试一下测试一下测试一下测试一下测试一下测试一下测试一下测试一下测试一下测试一下测试一下测试一下测试一下",
+          tags:["vue开发","测试标签"],
+          author:"lh"
         },
         {
           id:'2',
-          text:"test2",
+          title:"test2",
+          text:"这是一段测试文字，这里是article组件的内容，内容是啊八八八八八八八八吧阿八八八",
+          tags:["springboot开发","扬州实习"]
         },
         {
           id:'3',
-          text:"test3",
-        }
+          title:"test3",
+          text:"这是一段测试文字，这里是article组件的内容，内容是测试一下"
+        },
+        {
+          id:'3',
+          title:"test3",
+          text:"这是一段测试文字，这里是article组件的内容，内容是啊八八八八八八八八吧阿八八八"
+        },
+        {
+          id:'3',
+          title:"test3",
+          text:"这是一段测试文字，这里是article组件的内容，内容是啊八八八八八八八八吧阿八八八"
+        },
+        {
+          id:'3',
+          title:"test3",
+          text:"这是一段测试文字，这里是article组件的内容，内容是啊八八八八八八八八吧阿八八八"
+        },
+        {
+          id:'3',
+          title:"test3",
+          text:"这是一段测试文字，这里是article组件的内容，内容是啊八八八八八八八八吧阿八八八"
+        },
+        {
+          id:'3',
+          title:"test3",
+          text:"这是一段测试文字，这里是article组件的内容，内容是啊八八八八八八八八吧阿八八八"
+        },
+
       ]
     }
 },
@@ -125,6 +166,24 @@ methods:{
     },
     goToMainFrame(){
       this.userHidden = true;
+    },
+    handleScroll() {
+      const checkElement = document.getElementById('check');
+      const checkRect = checkElement.getBoundingClientRect();
+      console.log(checkRect.bottom);
+      const userInfo = this.$refs.userInfo;
+      const articleList = this.$refs.articleList;
+      
+      if (checkRect.bottom < 0) {
+        // 当 check 不可见时，固定 userInfo，滚动 articleList
+        userInfo.style.position = 'fixed';
+        //userInfo.style.top = '8%'; // 根据实际需求调整位置
+        //articleList.style.marginTop = '20%'; // 确保 articleList 不会被 userInfo 覆盖
+      } else {
+        // 当 check 可见时，恢复 userInfo 原位置
+        userInfo.style.position = 'absolute';
+        userInfo.style.top = '10%';
+      }
     }
 }
 }
@@ -140,34 +199,70 @@ methods:{
   left: 0;
 }
 
+.user-style{
+  position: absolute;
+  left:2%;
+  top:10%;
+  width:100%;
+  height: 100%;
+}
+
+.main{
+  position: absolute;
+  width:100%;
+  height: 100%;  
+  overflow-y: auto; 
+  -ms-overflow-style: none; 
+  background-color: #ffffff;
+  top:0;
+}
+.main::-webkit-scrollbar {
+  display: none;  /* 适用于 Chrome, Safari 和 Opera */
+}
+
+.container{
+  position: absolute;
+  width:100%;
+  height:100%;
+  top:60%;
+  left:0;
+  background-color: white;
+  z-index: 2;
+}
+.background::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari, and Opera */
+}
+
+
 #background-video {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 60%;
   object-fit: cover; /* 或者使用 contain，根据需要选择 */
+  z-index: 1;
 }
 .header{
     position: absolute;
-    background-color: #75a694;
+    background-color: #75a69400;
     height: 6%;
     width: 100%;
     opacity: 1;
     top: 0px;
     left: 0px;
+    z-index: 1000; /* 确保 header 在页面顶部 */
+    transition: background-color 0.3s ease; /* 添加过渡效果 */
   }
 
-  .user{
-    position: absolute;
-    left:2%;
-    top:10%;
+  .header:hover {
+    background-color: rgb(47, 48, 48); /* 悬浮时背景颜色加深 */
   }
 
   .userSetting{
     position: absolute;
     left:5%;
-    top:5%;
+    top:10%;
   }
 
   .personal-information{
@@ -193,24 +288,26 @@ methods:{
     top:-1px;
   }
 
-  .artical-list{
+  .article-list{
     position: absolute;
-    top: 40%;
-    left:30%;
+    top: 10%;
+    left:25%;
     width: 70%;
     height: 100%;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    grid-gap: 20px; /* 设置组件之间的间隔 */
+    grid-gap: 40px; 
+    grid-auto-rows: 300px;
   }
 
   .welcome{
     position: absolute;
-    background-color: blue;
+    background-color: rgba(255, 255, 255, 0);
     left:30%;
     top:10%;
     width:60%;
-    height:20%
+    height:20%;
+    z-index: 1;
   }
 
 </style>

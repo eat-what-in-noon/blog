@@ -82,7 +82,7 @@ export default {
 .main{
     position: relative;
     width:90%;
-    height:90%;
+    height:85%;
     background-color: rgba(240, 248, 255, 0.74);
     opacity: 1;
     border-radius:15px;
