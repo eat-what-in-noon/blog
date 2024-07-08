@@ -3,7 +3,9 @@ package com.example.practice.service;
 import com.example.practice.entity.ArticleLike;
 import com.example.practice.entity.Follow;
 import com.example.practice.entity.User;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Map;
 
 public interface UserService {
@@ -19,6 +21,9 @@ public interface UserService {
 
     // 忘记密码处理函数接口
     Map<String, Object> forgetPassword(String userId, String newPassword, String checkCode);
+
+    // 上传头像处理函数接口
+    Map<String, Object> uploadAvatar(MultipartFile avatar) throws IOException;
 
     // 注销处理函数接口
     Map<String, Object> logout(String username);

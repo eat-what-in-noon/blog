@@ -1,5 +1,6 @@
 package com.example.practice.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.practice.entity.Article;
 import com.example.practice.entity.ArticleTag;
@@ -12,8 +13,12 @@ import com.example.practice.mapper.TagMapper;
 import com.example.practice.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class ArticleServiceImpl implements ArticleService {
@@ -37,7 +42,10 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public Map<String, Object> addArticle(Article article) {
         articleMapper.insert(article);
-        return Map.of("error_message", "success");
+        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.orderByDesc(Article::getId); // 根据 id 字段降序排列
+        Integer articleId = articleMapper.selectList(queryWrapper).get(0).getId();
+        return Map.of("error_message", "success", "data", articleId);
     }
 
     // 为文章添加标签函数具体逻辑
@@ -60,5 +68,18 @@ public class ArticleServiceImpl implements ArticleService {
     public Map<String, Object> addComment(Comment comment) {
         commentMapper.insert(comment);
         return Map.of("error_message", "success");
+    }
+
+    // 上传文章封面函数具体逻辑
+    @Override
+    public Map<String, Object> uploadCover(MultipartFile cover) throws IOException {
+        String uploadPath = "C:/Users/Joker/Desktop/JavaSpace/practice/src/main/resources/static/cover/";
+        String originalFilename = cover.getOriginalFilename();
+        String suffix = originalFilename.substring(originalFilename.lastIndexOf("."));
+        String fileName = UUID.randomUUID() + suffix;
+        String savePath = uploadPath + fileName;
+        File dest = new File(savePath);
+        cover.transferTo(dest);
+        return Map.of("error_message", "success", "data", fileName);
     }
 }

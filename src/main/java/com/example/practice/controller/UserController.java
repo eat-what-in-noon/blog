@@ -6,7 +6,10 @@ import com.example.practice.entity.User;
 import com.example.practice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.Map;
 
 //用户相关操作接口
@@ -54,7 +57,22 @@ public class UserController {
         String checkCode = map.get("checkCode");
         return userService.forgetPassword(id, newPassword, checkCode);
     }
-    
+
+    // 上传头像接口
+    // 接收参数为Param，要求Param中必须包含上传的头像编码avatar
+    // 返回参数为JSON，其中error_message为提示信息，正常运行时为success；发生错误时则是对应错误。data为头像文件在后端静态地址
+    @GetMapping("/uploadAvatar/")
+    public Map<String, Object> uploadAvatar(@RequestParam("avatar") MultipartFile avatar) {
+        if (avatar.isEmpty()) {
+            return Map.of("error_message", "avatar is empty");
+        }
+        try {
+            return userService.uploadAvatar(avatar);
+        } catch (Exception e) {
+            return Map.of("error_message", e.getMessage());
+        }
+    }
+
     // 用户注销接口
     // 接收参数为JSON，要求JSON中包含username
     // 返回参数为JSON，其中error_message为提示信息，正常运行时为success；发生错误时则是对应错误。无data
