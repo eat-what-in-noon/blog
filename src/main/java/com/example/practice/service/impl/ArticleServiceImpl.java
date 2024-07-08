@@ -11,6 +11,7 @@ import com.example.practice.mapper.ArticleTagMapper;
 import com.example.practice.mapper.CommentMapper;
 import com.example.practice.mapper.TagMapper;
 import com.example.practice.service.ArticleService;
+import com.example.practice.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,6 +39,9 @@ public class ArticleServiceImpl implements ArticleService {
     @Autowired
     private CommentMapper commentMapper;
 
+    @Autowired
+    private TagService tagService;
+
     // 添加文章函数具体逻辑
     @Override
     public Map<String, Object> addArticle(Article article) {
@@ -55,7 +59,9 @@ public class ArticleServiceImpl implements ArticleService {
         queryWrapper.eq("tag_name", tagName);
         Tag tag = tagMapper.selectOne(queryWrapper);
         if (tag == null) {
-            Map.of("error_message", "该标签不存在，请创建该标签或重新选择标签");
+            tagService.addTag(tagName);
+            queryWrapper.eq("tag_name", tagName);
+            tag = tagMapper.selectOne(queryWrapper);
         }
         Integer tagId = tag.getId();
         ArticleTag articleTag = new ArticleTag(articleId, tagId);
