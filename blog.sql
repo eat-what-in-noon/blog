@@ -3,16 +3,15 @@ CREATE DATABASE blog;
 USE blog;
 
 -- 用户表
-CREATE TABLE user (
+CREATE TABLE USER (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(20) NOT NULL,
-    password VARCHAR(100) NOT NULL,
+    PASSWORD VARCHAR(100) NOT NULL,
     email VARCHAR(40) UNIQUE,
     phone_number VARCHAR(20),
     gender VARCHAR(10),
     introduction TEXT,
-    avatar VARCHAR(100),
-    UNIQUE(provider, provider_id)
+    avatar VARCHAR(100)
 );
 
 
@@ -96,5 +95,4 @@ CREATE TABLE article_tag (
 -- tag 表存储标签信息，包括标签名。
 -- categories 表存储分类信息，包括分类名。
 -- article_tags 表存储文章与标签的多对多关系。
-
 
