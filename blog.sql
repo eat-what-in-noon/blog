@@ -7,13 +7,11 @@ CREATE TABLE user (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(20) NOT NULL,
     password VARCHAR(100) NOT NULL,
-    role VARCHAR(10),
-    provider VARCHAR(20),
-    provider_id VARCHAR(100),
     email VARCHAR(40) UNIQUE,
     phone_number VARCHAR(20),
     gender VARCHAR(10),
     introduction TEXT,
+    avatar VARCHAR(100),
     UNIQUE(provider, provider_id)
 );
 
@@ -62,6 +60,7 @@ CREATE TABLE article (
     created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     author_id BIGINT,
     category_id BIGINT,
+    cover VARCHAR(100),
     FOREIGN KEY (author_id) REFERENCES user(id),
     FOREIGN KEY (category_id) REFERENCES category(id)
 );
