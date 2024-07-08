@@ -11,8 +11,14 @@ public interface UserService {
     // 登陆处理函数接口
     Map<String, Object> login(String loginName, String password);
 
+    // 邮箱登陆处理函数接口
+    Map<String, Object> loginByEmail(String email, String checkCode);
+
     // 注册处理函数接口
     Map<String, Object> register(User user);
+
+    // 忘记密码处理函数接口
+    Map<String, Object> forgetPassword(String userId, String newPassword, String checkCode);
 
     // 注销处理函数接口
     Map<String, Object> logout(String username);

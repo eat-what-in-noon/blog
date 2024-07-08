@@ -12,11 +12,14 @@ import com.example.practice.mapper.UserMapper;
 import com.example.practice.service.UserService;
 import com.example.practice.service.impl.utils.UserDetailsImpl;
 import com.example.practice.utils.JwtUtil;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,6 +27,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -58,8 +62,8 @@ public class UserServiceImpl implements UserService {
 
     //登陆处理函数具体逻辑
     @Override
-    public Map<String, Object> login(String loginName, String password) {
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginName, password);
+    public Map<String, Object> login(String username, String password) {
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
         try {
             Authentication authenticate = authenticationManager.authenticate(authenticationToken);
             // 若合法，则将其取出并赋予用户UserDetailsImpl类中的各种属性，形成loginUser
@@ -72,11 +76,30 @@ public class UserServiceImpl implements UserService {
             if (user1 != null) {
                 return Map.of("error_message", "用户已登陆,请勿重复登陆");
             }
-            redisTemplate.opsForValue().set("user:" + user.getUsername(), user);
+            redisTemplate.opsForValue().set("user:" + user.getUsername(), user, 1, TimeUnit.DAYS);
             return Map.of("error_message", "success", "token", jwt, "data", user);
         } catch (Exception e) {
             return Map.of("error_message", "用户名或密码错误");
+        }
+    }
 
+    @Override
+    public Map<String, Object> loginByEmail(String email, String checkCode) {
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("email", email);
+        User user = userMapper.selectOne(queryWrapper);
+        if (user == null) {
+            return Map.of("error_message", "用户不存在");
+        }
+        String trueCode = redisTemplate.opsForValue().get("email:" + email).toString().substring(9, 15);
+        if (trueCode == null) {
+            return Map.of("error_message", "验证码过期,请重新输入");
+        }
+        if (trueCode.equals(checkCode)) {
+            redisTemplate.delete("email:" + email);
+            return Map.of("error_message", "success", "data", user);
+        } else {
+            return Map.of("error_message", "验证码错误，请重新输入");
         }
     }
 
@@ -117,6 +140,30 @@ public class UserServiceImpl implements UserService {
         user.setPassword(EncodedPassword);
         userMapper.insert(user);
         return Map.of("error_message", "success");
+    }
+
+    // 忘记密码处理函数具体逻辑
+    @Override
+    public Map<String, Object> forgetPassword(String userId, String newPassword, String checkCode) {
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id", userId);
+        User user = userMapper.selectOne(queryWrapper);
+        String email = user.getEmail();
+        String trueCode = redisTemplate.opsForValue().get("email:" + email).toString().substring(9, 15);
+        System.out.println(trueCode);
+        if (trueCode == null) {
+            return Map.of("error_message", "验证码过期,请重新输入");
+        }
+        if (trueCode.equals(checkCode)) {
+            String EncodedPassword = passwordEncoder.encode(newPassword);
+            user.setPassword(EncodedPassword);
+            userMapper.update(user, queryWrapper);
+            redisTemplate.delete("email:" + email);
+            return Map.of("error_message", "success");
+        } else {
+            return Map.of("error_message", "验证码错误，请重新输入");
+        }
+
     }
 
     // 注销处理函数具体逻辑

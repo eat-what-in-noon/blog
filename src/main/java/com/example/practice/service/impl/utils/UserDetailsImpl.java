@@ -29,11 +29,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String getUsername() {
-        if (user.getUsername() != null) {
-            return user.getUsername();
-        } else {
-            return user.getEmail();
-        }
+        return user.getUsername();
     }
 
     @Override

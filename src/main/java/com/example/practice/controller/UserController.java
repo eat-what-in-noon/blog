@@ -23,14 +23,14 @@ public class UserController {
     public Map<String, Object> login(@RequestBody Map<String, String> map) {
         String username = map.get("username");
         String password = map.get("password");
+        return userService.login(username, password);
+    }
+
+    @PostMapping("/loginByEmail")
+    public Map<String, Object> loginByEmail(@RequestBody Map<String, String> map) {
         String email = map.get("email");
-        String loginName;
-        if (username == null) {
-            loginName = email;
-        } else {
-            loginName = username;
-        }
-        return userService.login(loginName, password);
+        String checkCode = map.get("checkCode");
+        return userService.loginByEmail(email, checkCode);
     }
 
     // 用户注册接口
@@ -40,6 +40,18 @@ public class UserController {
     public Map<String, Object> register(@RequestBody User user) {
         return userService.register(user);
     }
+
+    // 用户忘记密码接口
+    // 接收参数为JSON，要求JSON中必须包含用户的id、忘记密码之后要修改的新密码newPassword以及邮箱验证码checkCode
+    // 返回参数为JSON，其中error_message为提示信息，正常运行时为success；发生错误时则是对应错误。无data
+    @PutMapping("/forgetPassword")
+    public Map<String, Object> changePassword(@RequestBody Map<String, String> map) {
+        String id = map.get("id");
+        String newPassword = map.get("newPassword");
+        String checkCode = map.get("checkCode");
+        return userService.forgetPassword(id, newPassword, checkCode);
+    }
+
 
     // 用户注销接口
     // 接收参数为JSON，要求JSON中包含username
