@@ -39,7 +39,7 @@
           Your browser does not support the video tag.
       </video>
 
-        <div v-if="userHidden" class="welcome">
+        <div v-if="showMain" class="welcome">
           <div style="position: absolute;">
               <h1>欢迎来到博客平台</h1>
               <h2>123456879456654654654</h2>
@@ -363,12 +363,12 @@ methods:{
     padding-top: 50px;
     padding-bottom:20px;
     left:25%;
-    width: 70%;
+    width: 75%;
     height: auto;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    grid-gap: 40px; 
-    grid-auto-rows: 300px;
+    grid-gap: 30px; 
+    grid-auto-rows: 320px;
   }
 
   .filter-article-list{
