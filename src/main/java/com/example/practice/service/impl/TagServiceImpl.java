@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class TagServiceImpl implements TagService {
@@ -37,6 +38,12 @@ public class TagServiceImpl implements TagService {
     // 获取最热门十个标签函数具体逻辑
     @Override
     public Map<String, Object> getTag() {
+        QueryWrapper<Tag> queryWrapper1 = new QueryWrapper<>();
+        List<Tag> tags = tagMapper.selectList(queryWrapper1);
+        if (tags.size() <= 20) {
+            List<String> tagNames = tags.stream().map(Tag::getTagName).collect(Collectors.toList());
+            return Map.of("error_message", "success", "data", tagNames);
+        }
         QueryWrapper<ArticleTag> queryWrapper = new QueryWrapper<>();
         List<ArticleTag> articleTags = articleTagMapper.selectList(queryWrapper);
 
@@ -65,13 +72,13 @@ public class TagServiceImpl implements TagService {
         // 因为优先队列是最小堆，所以需要反转列表顺序，使得出现次数最多的在前面
         Collections.reverse(top20);
 
-        List<String> top10TagName = new ArrayList<>();
+        List<String> top20TagName = new ArrayList<>();
         // 返回结果
         for (Map.Entry<Integer, Integer> entry : top20) {
             QueryWrapper<Tag> tagQueryWrapper = new QueryWrapper<>();
             tagQueryWrapper.eq("id", entry.getValue());
-            top10TagName.add(tagMapper.selectOne(tagQueryWrapper).getTagName());
+            top20TagName.add(tagMapper.selectOne(tagQueryWrapper).getTagName());
         }
-        return Map.of("error_message", "success", "data", top10TagName);
+        return Map.of("error_message", "success", "data", top20TagName);
     }
 }
