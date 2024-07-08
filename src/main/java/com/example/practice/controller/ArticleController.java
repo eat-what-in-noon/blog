@@ -1,5 +1,6 @@
 package com.example.practice.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.practice.entity.Article;
 import com.example.practice.entity.Comment;
 import com.example.practice.service.ArticleService;
@@ -7,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 // 文章相关操作接口
@@ -55,5 +59,29 @@ public class ArticleController {
     @PostMapping("/addComment")
     public Map<String, Object> addComment(@RequestBody Comment comment) {
         return articleService.addComment(comment);
+    }
+
+    // 根据id获取文章信息接口
+    // 接收参数为Param，要求Param中包含文章id
+    // 返回参数为JSON，其中error_message为提示信息，正常运行时为success；发生错误时则是对应错误。data为id对应文章所有数据
+    @GetMapping("/getArticleInfoById")
+    public Map<String, Object> getArticleInfoById(@PathVariable @RequestParam String id) {
+        return articleService.getArticleInfoById(id);
+    }
+
+    // 根据tag获取文章id和title接口
+    // 接收参数为Param，要求Param中包含tag名tagName
+    // 返回参数为JSON，其中error_message为提示信息，正常运行时为success；发生错误时则是对应错误。data为有该tagName所有文章id和title
+    @GetMapping("/getArticleInfoByTag")
+    public Map<String, Object> getArticleInfoByTag(@RequestParam String tagName) {
+        return articleService.getArticleInfoByTag(tagName);
+    }
+
+    // 获取所有文章id和title接口
+    // 无接收参数
+    // 返回参数为JSON，其中error_message为提示信息，正常运行时为success；发生错误时则是对应错误。data为所有文章的id和title
+    @GetMapping("/getAllArtice")
+    public Map<String, Object> getAllArticle() {
+        return articleService.getAllArticle();
     }
 }

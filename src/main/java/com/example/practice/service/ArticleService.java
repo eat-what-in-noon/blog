@@ -20,4 +20,13 @@ public interface ArticleService {
 
     // 上传文章封面函数接口
     Map<String, Object> uploadCover(MultipartFile cover) throws IOException;
+
+    // 根据id获取文章信息函数接口
+    Map<String, Object> getArticleInfoById(String id);
+
+    // 根据tag获取文章信息函数接口
+    Map<String, Object> getArticleInfoByTag(String tagName);
+
+    // 返回所有文章的id和title函数接口
+    Map<String, Object> getAllArticle();
 }

@@ -43,8 +43,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/user/login", "/user/loginByEmail", "/user/register"
-                        , "/user/forgetPassword", "/mail/getCheckCode", "/static/**"
-                        , "/article/addArticle").permitAll() //公开
+                        , "/user/forgetPassword", "/mail/getCheckCode", "/static/**").permitAll() //公开
                 .antMatchers(HttpMethod.OPTIONS).permitAll()
                 .anyRequest().authenticated();
 

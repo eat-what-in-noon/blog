@@ -18,8 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class ArticleServiceImpl implements ArticleService {
@@ -88,4 +87,53 @@ public class ArticleServiceImpl implements ArticleService {
         cover.transferTo(dest);
         return Map.of("error_message", "success", "data", fileName);
     }
+
+    // 根据id获取文章信息函数具体逻辑
+    @Override
+    public Map<String, Object> getArticleInfoById(String id) {
+        QueryWrapper<Article> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id", id);
+        Article article = articleMapper.selectOne(queryWrapper);
+        return Map.of("error_message", "success", "data", article);
+    }
+
+    // 根据tag获取文章标题和id函数具体逻辑
+    @Override
+    public Map<String, Object> getArticleInfoByTag(String tagName) {
+        QueryWrapper<Tag> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("tag_name", tagName);
+        Tag tag = tagMapper.selectOne(queryWrapper);
+        Integer tagId = tag.getId();
+        QueryWrapper<ArticleTag> articleTagQueryWrapper = new QueryWrapper<>();
+        articleTagQueryWrapper.eq("tag_id", tagId);
+        List<ArticleTag> articleTags = articleTagMapper.selectList(articleTagQueryWrapper);
+        // 用一个map列表来存储id和title属性，list每一项都存储一个map，map中有id和title的映射
+        List<Map<String, String>> mapList = new ArrayList<>();
+        for (ArticleTag articleTag : articleTags) {
+            QueryWrapper<Article> articleQueryWrapper = new QueryWrapper<>();
+            articleQueryWrapper.eq("id", articleTag.getArticleId());
+            Article article = articleMapper.selectOne(articleQueryWrapper);
+            Map<String, String> map = new HashMap<>();
+            map.put("id", article.getId().toString());
+            map.put("title", article.getTitle());
+            mapList.add(map);
+        }
+        return Map.of("error_message", "success", "data", mapList);
+    }
+
+    @Override
+    public Map<String, Object> getAllArticle() {
+        QueryWrapper<Article> queryWrapper = new QueryWrapper<>();
+        List<Article> articles = articleMapper.selectList(queryWrapper);
+        List<Map<String, String>> mapList = new ArrayList<>();
+        for (Article article : articles) {
+            Map<String, String> map = new HashMap<>();
+            map.put("id", article.getId().toString());
+            map.put("title", article.getTitle());
+            mapList.add(map);
+        }
+        return Map.of("error_message", "success", "data", mapList);
+    }
+
+
 }
