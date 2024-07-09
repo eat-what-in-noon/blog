@@ -32,7 +32,7 @@ public interface UserService {
     Map<String, Object> logout(String username);
 
     // 用户信息查询处理函数接口
-    Map<String, Object> userInfo();
+    Map<String, Object> userInfo(Integer id);
 
     // 用户点赞函数接口
     Map<String, Object> like(ArticleLike articleLike);

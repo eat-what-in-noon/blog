@@ -208,11 +208,10 @@ public class UserServiceImpl implements UserService {
 
     // 用户信息获取处理函数具体逻辑
     @Override
-    public Map<String, Object> userInfo() {
-        UsernamePasswordAuthenticationToken authentication =
-                (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        UserDetailsImpl LoginUser = (UserDetailsImpl) authentication.getPrincipal();
-        User user = LoginUser.getUser();
+    public Map<String, Object> userInfo(Integer id) {
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id", id);
+        User user = userMapper.selectOne(queryWrapper);
         return Map.of("error_message", "success", "data", user);
     }
 

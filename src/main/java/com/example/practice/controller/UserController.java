@@ -91,11 +91,11 @@ public class UserController {
     }
 
     // 用户信息接口
-    // 无接收参数
+    // 接收参数为Param，要求包含用户id
     // 返回参数为JSON，其中error_message为提示信息，正常运行时为success；发生错误时则是对应错误。data为当前登陆的用户数据
     @GetMapping("/userinfo")
-    public Map<String, Object> userinfo() {
-        return userService.userInfo();
+    public Map<String, Object> userinfo(@RequestParam Integer id) {
+        return userService.userInfo(id);
     }
 
     // 用户点赞接口
