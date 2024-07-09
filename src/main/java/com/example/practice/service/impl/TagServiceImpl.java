@@ -76,7 +76,7 @@ public class TagServiceImpl implements TagService {
         // 返回结果
         for (Map.Entry<Integer, Integer> entry : top20) {
             QueryWrapper<Tag> tagQueryWrapper = new QueryWrapper<>();
-            tagQueryWrapper.eq("id", entry.getValue());
+            tagQueryWrapper.eq("id", entry.getKey());
             top20TagName.add(tagMapper.selectOne(tagQueryWrapper).getTagName());
         }
         return Map.of("error_message", "success", "data", top20TagName);

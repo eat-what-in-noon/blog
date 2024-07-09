@@ -36,6 +36,11 @@ public class ArticleServiceImpl implements ArticleService {
     @Autowired
     private CommentMapper commentMapper;
 
+    // 定义ArticleLike数据表操作变量
+    @Autowired
+    private ArticleLikeMapper articleLikeMapper;
+
+    // 定义Tag功能操作变量
     @Autowired
     private TagService tagService;
 
@@ -83,11 +88,18 @@ public class ArticleServiceImpl implements ArticleService {
 
     // 根据id获取文章信息函数具体逻辑
     @Override
-    public Map<String, Object> getArticleInfoById(String id) {
+    public Map<String, Object> getArticleInfoById(Integer id) {
         QueryWrapper<Article> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("id", id);
         Article article = articleMapper.selectOne(queryWrapper);
-        return Map.of("error_message", "success", "data", article);
+        QueryWrapper<Comment> commentQueryWrapper = new QueryWrapper<>();
+        QueryWrapper<ArticleLike> articleLikeQueryWrapper = new QueryWrapper<>();
+        commentQueryWrapper.eq("article_id", article.getId());
+        articleLikeQueryWrapper.eq("article_id", article.getId());
+        Integer commentCnt = commentMapper.selectList(commentQueryWrapper).size();
+        Integer likeCnt = articleLikeMapper.selectList(articleLikeQueryWrapper).size();
+        return Map.of("error_message", "success", "data", article
+                , "commentCnt", commentCnt, "likeCnt", likeCnt);
     }
 
     // 根据tag获取所有相关文章的除content外所有内容
@@ -103,6 +115,8 @@ public class ArticleServiceImpl implements ArticleService {
         List<ArticleTag> articleTags = articleTagMapper.selectList(articleTagQueryWrapper);
         // 遍历articleId，返回所有相关文章
         List<Article> articles = new ArrayList<>();
+        List<Integer> commentCnt = new ArrayList<>();
+        List<Integer> likeCnt = new ArrayList<>();
         for (ArticleTag articleTag : articleTags) {
             QueryWrapper<Article> articleQueryWrapper = new QueryWrapper<>();
             articleQueryWrapper.eq("id", articleTag.getArticleId());
@@ -110,8 +124,16 @@ public class ArticleServiceImpl implements ArticleService {
             // 此时不需要content，为了节省开销，将content置为null
             article.setContent(null);
             articles.add(article);
+            // 查询文章对应的点赞数和评论数
+            QueryWrapper<Comment> commentQueryWrapper = new QueryWrapper<>();
+            QueryWrapper<ArticleLike> articleLikeQueryWrapper = new QueryWrapper<>();
+            commentQueryWrapper.eq("article_id", article.getId());
+            articleLikeQueryWrapper.eq("article_id", article.getId());
+            commentCnt.add(commentMapper.selectList(commentQueryWrapper).size());
+            likeCnt.add(articleLikeMapper.selectList(articleLikeQueryWrapper).size());
         }
-        return Map.of("error_message", "success", "data", articles);
+        return Map.of("error_message", "success", "data", articles
+                , "commentCnt", commentCnt, "likeCnt", likeCnt);
     }
 
     @Override
@@ -125,10 +147,20 @@ public class ArticleServiceImpl implements ArticleService {
         queryWrapper.eq("category_id", categoryId);
         // 遍历articleId，返回所有相关文章
         List<Article> articles = articleMapper.selectList(articleQueryWrapper);
+        List<Integer> commentCnt = new ArrayList<>();
+        List<Integer> likeCnt = new ArrayList<>();
         for (Article article : articles) {
             article.setContent(null);
+            // 查询文章对应的点赞数和评论数
+            QueryWrapper<Comment> commentQueryWrapper = new QueryWrapper<>();
+            QueryWrapper<ArticleLike> articleLikeQueryWrapper = new QueryWrapper<>();
+            commentQueryWrapper.eq("article_id", article.getId());
+            articleLikeQueryWrapper.eq("article_id", article.getId());
+            commentCnt.add(commentMapper.selectList(commentQueryWrapper).size());
+            likeCnt.add(articleLikeMapper.selectList(articleLikeQueryWrapper).size());
         }
-        return Map.of("error_message", "success", "data", articles);
+        return Map.of("error_message", "success", "data", articles
+                , "commentCnt", commentCnt, "likeCnt", likeCnt);
     }
 
     // 返回所有文章的除了content外内容函数具体逻辑
@@ -136,10 +168,20 @@ public class ArticleServiceImpl implements ArticleService {
     public Map<String, Object> getAllArticle() {
         QueryWrapper<Article> queryWrapper = new QueryWrapper<>();
         List<Article> articles = articleMapper.selectList(queryWrapper);
+        List<Integer> commentCnt = new ArrayList<>();
+        List<Integer> likeCnt = new ArrayList<>();
         for (Article article : articles) {
             article.setContent(null);
+            // 查询文章对应的点赞数和评论数
+            QueryWrapper<Comment> commentQueryWrapper = new QueryWrapper<>();
+            QueryWrapper<ArticleLike> articleLikeQueryWrapper = new QueryWrapper<>();
+            commentQueryWrapper.eq("article_id", article.getId());
+            articleLikeQueryWrapper.eq("article_id", article.getId());
+            commentCnt.add(commentMapper.selectList(commentQueryWrapper).size());
+            likeCnt.add(articleLikeMapper.selectList(articleLikeQueryWrapper).size());
         }
-        return Map.of("error_message", "success", "data", articles);
+        return Map.of("error_message", "success", "data", articles
+                , "commentCnt", commentCnt, "likeCnt", likeCnt);
     }
 
     // 获得文章所有评论的函数具体逻辑

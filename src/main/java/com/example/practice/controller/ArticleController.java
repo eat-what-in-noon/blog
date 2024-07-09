@@ -36,7 +36,7 @@ public class ArticleController {
     // 上传文章封面接口
     // 接收参数为Param，要求Param中必须包含上传的封面编码cover
     // 返回参数为JSON，其中error_message为提示信息，正常运行时为success；发生错误时则是对应错误。data为封面文件在后端静态地址
-    @GetMapping("/uploadCover")
+    @PostMapping("/uploadCover")
     public Map<String, Object> uploadAvatar(@RequestParam("cover") MultipartFile cover) {
         if (cover.isEmpty()) {
             return Map.of("error_message", "cover is empty");
@@ -52,7 +52,7 @@ public class ArticleController {
     // 接收参数为Param，要求Param中包含文章id
     // 返回参数为JSON，其中error_message为提示信息，正常运行时为success；发生错误时则是对应错误。data为id对应文章所有信息
     @GetMapping("/getArticleInfoById")
-    public Map<String, Object> getArticleInfoById(@RequestParam String id) {
+    public Map<String, Object> getArticleInfoById(@RequestParam Integer id) {
         return articleService.getArticleInfoById(id);
     }
 

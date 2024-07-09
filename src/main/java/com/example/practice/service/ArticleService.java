@@ -17,7 +17,7 @@ public interface ArticleService {
     Map<String, Object> uploadCover(MultipartFile cover) throws IOException;
 
     // 根据id获取文章信息函数接口
-    Map<String, Object> getArticleInfoById(String id);
+    Map<String, Object> getArticleInfoById(Integer id);
 
     // 根据tag获取文章信息函数接口
     Map<String, Object> getArticleInfoByTag(String tagName);
