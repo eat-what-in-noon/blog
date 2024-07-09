@@ -94,7 +94,10 @@ public class UserServiceImpl implements UserService {
         }
         if (trueCode.equals(checkCode)) {
             redisTemplate.delete("email:" + email);
-            return Map.of("error_message", "success", "data", user);
+
+            // 生成 JWT token
+            String jwt = JwtUtil.createJWT(user.getId().toString());
+            return Map.of("error_message", "success", "token", jwt, "data", user);
         } else {
             return Map.of("error_message", "验证码错误，请重新输入");
         }
@@ -145,6 +148,9 @@ public class UserServiceImpl implements UserService {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("email", email);
         User user = userMapper.selectOne(queryWrapper);
+        if (user == null) {
+            return Map.of("error_message", "该邮箱未绑定用户，请重新输入");
+        }
         String trueCode = redisTemplate.opsForValue().get("email:" + email).toString().substring(9, 15);
         if (trueCode == null) {
             return Map.of("error_message", "验证码过期,请重新输入");
