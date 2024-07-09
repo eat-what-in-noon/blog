@@ -9,14 +9,11 @@ import com.example.practice.mapper.UserMapper;
 import com.example.practice.service.UserService;
 import com.example.practice.service.impl.utils.UserDetailsImpl;
 import com.example.practice.utils.JwtUtil;
-import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -131,10 +128,10 @@ public class UserServiceImpl implements UserService {
             return Map.of("error_message", "邮箱不能为空");
         }
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("username", username);
+        queryWrapper.eq("email", email);
         List<User> users = userMapper.selectList(queryWrapper);
         if (!users.isEmpty()) {
-            return Map.of("error_message", "用户名已存在");
+            return Map.of("error_message", "该邮箱已绑定用户，请切换邮箱");
         }
         String EncodedPassword = passwordEncoder.encode(password);
         user.setPassword(EncodedPassword);
@@ -144,11 +141,10 @@ public class UserServiceImpl implements UserService {
 
     // 忘记密码处理函数具体逻辑
     @Override
-    public Map<String, Object> forgetPassword(String userId, String newPassword, String checkCode) {
+    public Map<String, Object> forgetPassword(String email, String newPassword, String checkCode) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("id", userId);
+        queryWrapper.eq("email", email);
         User user = userMapper.selectOne(queryWrapper);
-        String email = user.getEmail();
         String trueCode = redisTemplate.opsForValue().get("email:" + email).toString().substring(9, 15);
         if (trueCode == null) {
             return Map.of("error_message", "验证码过期,请重新输入");

@@ -50,10 +50,10 @@ public class UserController {
     // 返回参数为JSON，其中error_message为提示信息，正常运行时为success；发生错误时则是对应错误。无data
     @PutMapping("/forgetPassword")
     public Map<String, Object> changePassword(@RequestBody Map<String, String> map) {
-        String id = map.get("id");
+        String email = map.get("email");
         String newPassword = map.get("newPassword");
         String checkCode = map.get("checkCode");
-        return userService.forgetPassword(id, newPassword, checkCode);
+        return userService.forgetPassword(email, newPassword, checkCode);
     }
 
     // 判断验证码是否正确接口

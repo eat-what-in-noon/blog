@@ -20,7 +20,7 @@ public interface UserService {
     Map<String, Object> register(User user);
 
     // 忘记密码处理函数接口
-    Map<String, Object> forgetPassword(String userId, String newPassword, String checkCode);
+    Map<String, Object> forgetPassword(String email, String newPassword, String checkCode);
 
     // 判断验证码是否正确函数接口
     Map<String, Object> check(String email, String checkCode);
