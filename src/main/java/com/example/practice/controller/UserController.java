@@ -61,7 +61,7 @@ public class UserController {
     // 上传头像接口
     // 接收参数为Param，要求Param中必须包含上传的头像编码avatar
     // 返回参数为JSON，其中error_message为提示信息，正常运行时为success；发生错误时则是对应错误。data为头像文件在后端静态地址
-    @GetMapping("/uploadAvatar/")
+    @GetMapping("/uploadAvatar")
     public Map<String, Object> uploadAvatar(@RequestParam("avatar") MultipartFile avatar) {
         if (avatar.isEmpty()) {
             return Map.of("error_message", "avatar is empty");
