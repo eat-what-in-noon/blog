@@ -56,6 +56,16 @@ public class UserController {
         return userService.forgetPassword(id, newPassword, checkCode);
     }
 
+    // 判断验证码是否正确接口
+    // 接收参数为JSON，要求JSON中必须包含用户的email以及邮箱验证码checkCode
+    // 返回参数为JSON，其中error_message为提示信息，正常运行时为success；发生错误时则是对应错误。无data
+    @PostMapping("/checkCode")
+    public Map<String, Object> check(@RequestBody Map<String, String> map) {
+        String email = map.get("email");
+        String checkCode = map.get("checkCode");
+        return userService.check(email, checkCode);
+    }
+
     // 上传头像接口
     // 接收参数为Param，要求Param中必须包含上传的头像编码avatar
     // 返回参数为JSON，其中error_message为提示信息，正常运行时为success；发生错误时则是对应错误。data为头像文件在后端静态地址

@@ -150,7 +150,6 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.selectOne(queryWrapper);
         String email = user.getEmail();
         String trueCode = redisTemplate.opsForValue().get("email:" + email).toString().substring(9, 15);
-        System.out.println(trueCode);
         if (trueCode == null) {
             return Map.of("error_message", "验证码过期,请重新输入");
         }
@@ -164,6 +163,21 @@ public class UserServiceImpl implements UserService {
             return Map.of("error_message", "验证码错误，请重新输入");
         }
 
+    }
+
+    // 判断验证码是否正确函数具体逻辑
+    @Override
+    public Map<String, Object> check(String email, String checkCode) {
+        String trueCode = redisTemplate.opsForValue().get("email:" + email).toString().substring(9, 15);
+        if (trueCode == null) {
+            return Map.of("error_message", "验证码过期,请重新输入");
+        }
+        if (trueCode.equals(checkCode)) {
+            redisTemplate.delete("email:" + email);
+            return Map.of("error_message", "success");
+        } else {
+            return Map.of("error_message", "验证码错误，请重新输入");
+        }
     }
 
     // 上传头像处理函数具体逻辑
