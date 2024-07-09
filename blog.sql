@@ -40,7 +40,7 @@ INSERT INTO category (id, category_name) VALUES
 (9, '国际'),
 (10, '生活'),
 (11, '汽车'),
-(12, '摄影'),
+(12, '摄影')
 
 
 -- 文章表
