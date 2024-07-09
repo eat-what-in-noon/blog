@@ -50,21 +50,29 @@ public class ArticleController {
 
     // 根据id获取文章信息接口
     // 接收参数为Param，要求Param中包含文章id
-    // 返回参数为JSON，其中error_message为提示信息，正常运行时为success；发生错误时则是对应错误。data为id对应文章所有数据
+    // 返回参数为JSON，其中error_message为提示信息，正常运行时为success；发生错误时则是对应错误。data为id对应文章所有信息
     @GetMapping("/getArticleInfoById")
     public Map<String, Object> getArticleInfoById(@RequestParam String id) {
         return articleService.getArticleInfoById(id);
     }
 
-    // 根据tag获取文章id和title接口
+    // 根据tag获取文章信息接口
     // 接收参数为Param，要求Param中包含tag名tagName
-    // 返回参数为JSON，其中error_message为提示信息，正常运行时为success；发生错误时则是对应错误。data为有该tagName所有文章id和title
+    // 返回参数为JSON，其中error_message为提示信息，正常运行时为success；发生错误时则是对应错误。data为有该tag的所有文章信息
     @GetMapping("/getArticleInfoByTag")
     public Map<String, Object> getArticleInfoByTag(@RequestParam String tagName) {
         return articleService.getArticleInfoByTag(tagName);
     }
 
-    // 获取所有文章id和title接口
+    // 根据category获取文章信息接口
+    // 接收参数为Param，要求Param中包含category名categoryName
+    // 返回参数为JSON，其中error_message为提示信息，正常运行时为success；发生错误时则是对应错误。data为在该category下所有文章信息
+    @GetMapping("/getArticleInfoByCategory")
+    public Map<String, Object> getArticleInfoByCategory(@RequestParam String categoryName) {
+        return articleService.getArticleInfoByCategory(categoryName);
+    }
+
+    // 获取所有文章信息接口
     // 无接收参数
     // 返回参数为JSON，其中error_message为提示信息，正常运行时为success；发生错误时则是对应错误。data为所有文章的id和title
     @GetMapping("/getAllArticle")

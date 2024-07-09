@@ -35,7 +35,7 @@ public class TagServiceImpl implements TagService {
         return Map.of("error_message", "success");
     }
 
-    // 获取最热门十个标签函数具体逻辑
+    // 获取最热门20个标签函数具体逻辑
     @Override
     public Map<String, Object> getTag() {
         QueryWrapper<Tag> queryWrapper1 = new QueryWrapper<>();
@@ -55,7 +55,7 @@ public class TagServiceImpl implements TagService {
         }
         // 使用优先队列（最小堆）来取出出现次数最多的前十个tagId
         PriorityQueue<Map.Entry<Integer, Integer>> pq =
-                new PriorityQueue<>((a, b) -> a.getValue() - b.getValue());
+                new PriorityQueue<>(Comparator.comparingInt(Map.Entry::getValue));
         // 将所有的entry加入优先队列
         for (Map.Entry<Integer, Integer> entry : cnt.entrySet()) {
             pq.offer(entry);

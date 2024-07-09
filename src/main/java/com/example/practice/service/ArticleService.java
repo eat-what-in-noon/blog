@@ -1,7 +1,6 @@
 package com.example.practice.service;
 
 import com.example.practice.entity.Article;
-import com.example.practice.entity.Comment;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -22,6 +21,9 @@ public interface ArticleService {
 
     // 根据tag获取文章信息函数接口
     Map<String, Object> getArticleInfoByTag(String tagName);
+
+    // 根据category获取文章信息函数接口
+    Map<String, Object> getArticleInfoByCategory(String categoryName);
 
     // 返回所有文章的content以外内容函数接口
     Map<String, Object> getAllArticle();

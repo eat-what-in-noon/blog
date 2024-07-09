@@ -2,14 +2,8 @@ package com.example.practice.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.example.practice.entity.Article;
-import com.example.practice.entity.ArticleTag;
-import com.example.practice.entity.Comment;
-import com.example.practice.entity.Tag;
-import com.example.practice.mapper.ArticleMapper;
-import com.example.practice.mapper.ArticleTagMapper;
-import com.example.practice.mapper.CommentMapper;
-import com.example.practice.mapper.TagMapper;
+import com.example.practice.entity.*;
+import com.example.practice.mapper.*;
 import com.example.practice.service.ArticleService;
 import com.example.practice.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +23,10 @@ public class ArticleServiceImpl implements ArticleService {
     // 定义tag数据库操作变量
     @Autowired
     private TagMapper tagMapper;
+
+    // 定义category数据库操作变量
+    @Autowired
+    private CategoryMapper categoryMapper;
 
     // 定义article_tag数据表操作变量
     @Autowired
@@ -98,8 +96,7 @@ public class ArticleServiceImpl implements ArticleService {
         // 根据tagName查询tagId
         QueryWrapper<Tag> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("tag_name", tagName);
-        Tag tag = tagMapper.selectOne(queryWrapper);
-        Integer tagId = tag.getId();
+        Integer tagId = tagMapper.selectOne(queryWrapper).getId();
         // 根据tagId查询articleId
         QueryWrapper<ArticleTag> articleTagQueryWrapper = new QueryWrapper<>();
         articleTagQueryWrapper.eq("tag_id", tagId);
@@ -113,6 +110,23 @@ public class ArticleServiceImpl implements ArticleService {
             // 此时不需要content，为了节省开销，将content置为null
             article.setContent(null);
             articles.add(article);
+        }
+        return Map.of("error_message", "success", "data", articles);
+    }
+
+    @Override
+    public Map<String, Object> getArticleInfoByCategory(String categoryName) {
+        // 根据categoryName查询文章
+        QueryWrapper<Category> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("category_name", categoryName);
+        Integer categoryId = categoryMapper.selectOne(queryWrapper).getId();
+        // 根据categoryId查询articleId
+        QueryWrapper<Article> articleQueryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("category_id", categoryId);
+        // 遍历articleId，返回所有相关文章
+        List<Article> articles = articleMapper.selectList(articleQueryWrapper);
+        for (Article article : articles) {
+            article.setContent(null);
         }
         return Map.of("error_message", "success", "data", articles);
     }
@@ -136,11 +150,7 @@ public class ArticleServiceImpl implements ArticleService {
         if (comments == null) {
             return Map.of("error_message", "该文章暂时没有评论");
         }
-        for (Comment comment : comments) {
-            if (!Objects.equals(comment.getArticleId(), id)) {
-                comments.remove(comment);
-            }
-        }
+        comments.removeIf(comment -> !Objects.equals(comment.getArticleId(), id));
         return Map.of("error_message", "success", "data", comments);
     }
 
