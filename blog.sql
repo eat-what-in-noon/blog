@@ -78,6 +78,30 @@ CREATE TABLE article_tag (
     PRIMARY KEY (article_id, tag_id)
 );
 
+-- 文章点赞关联表
+create table article_like
+(
+    user_id    bigint not null,
+    article_id bigint not null,
+    primary key (article_id, user_id),
+    constraint article_like_article_id_fk
+        foreign key (article_id) references article (id),
+    constraint article_like_user_id_fk
+        foreign key (user_id) references user (id)
+);
+
+-- 用户关注关联表
+create table follow
+(
+    followed_id bigint not null,
+    follow_id   bigint not null,
+    primary key (follow_id, followed_id),
+    constraint follow_user_id_fk
+        foreign key (followed_id) references user (id),
+    constraint follow_user_id_fk2
+        foreign key (follow_id) references user (id)
+);
+
 
 
 
