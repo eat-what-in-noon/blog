@@ -46,7 +46,7 @@ public class UserController {
     }
 
     // 用户忘记密码接口
-    // 接收参数为JSON，要求JSON中必须包含用户的id、忘记密码之后要修改的新密码newPassword以及邮箱验证码checkCode
+    // 接收参数为JSON，要求JSON中必须包含用户的email、忘记密码之后要修改的新密码newPassword以及邮箱验证码checkCode
     // 返回参数为JSON，其中error_message为提示信息，正常运行时为success；发生错误时则是对应错误。无data
     @PutMapping("/forgetPassword")
     public Map<String, Object> changePassword(@RequestBody Map<String, String> map) {
