@@ -57,4 +57,10 @@ public interface UserService {
 
     // 获取用户文章的所有标签接口
     Map<String, Object> getAllTag(Integer id);
+
+    // 修改用户普通信息接口
+    Map<String, Object> changeUserInfo(Integer id, String username, String phoneNumber, String gender, String avatar);
+
+    // 修改用户邮箱信息接口
+    Map<String, Object> changeUserEmail(String oldEmail, String newEmail, String checkCode);
 }

@@ -5,9 +5,11 @@ import com.example.practice.entity.Follow;
 import com.example.practice.entity.User;
 import com.example.practice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.security.PublicKey;
 import java.util.Map;
 
 //用户相关操作接口
@@ -67,7 +69,7 @@ public class UserController {
     }
 
     // 上传头像接口
-    // 接收参数为Param，要求Param中必须包含上传的头像编码avatar
+    // 接收参数为Param，要求Param中必须包含上传的头像编码avatar，avatar中仅包含静态资源名，不包含路径。
     // 返回参数为JSON，其中error_message为提示信息，正常运行时为success；发生错误时则是对应错误。data为头像文件在后端静态地址
     @PostMapping("/uploadAvatar")
     public Map<String, Object> uploadAvatar(@RequestParam("avatar") MultipartFile avatar) {
@@ -160,5 +162,29 @@ public class UserController {
     @GetMapping("/getAllTag")
     public Map<String, Object> getAllTag(@RequestParam Integer id) {
         return userService.getAllTag(id);
+    }
+
+    // 修改用户普通信息接口
+    // 接收参数为JSON，要求JSON中包含用户修改的新信息
+    // 返回参数为JSON，其中error_message为提示信息，正常运行时为success；发生错误时则是对应错误。无data
+    @PutMapping("/changeUserInfo")
+    public Map<String, Object> changeUserInfo(@RequestBody Map<String, String> map) {
+        Integer id = Integer.valueOf(map.get("id"));
+        String username = map.get("username");
+        String phoneNumber = map.get("phoneNumber");
+        String gender = map.get("gender");
+        String avatar = map.get("avatar");
+        return userService.changeUserInfo(id, username, phoneNumber, gender, avatar);
+    }
+
+    // 修改用户邮箱接口
+    // 接收参数为JSON，要求JSON中包含用户旧邮箱，新邮箱，验证码
+    // 返回参数为JSON，其中error_message为提示信息，正常运行时为success；发生错误时则是对应错误。无data
+    @PutMapping("/changeUserEmail")
+    public Map<String, Object> changeUserEmail(@RequestBody Map<String, String> map) {
+        String oldEmail = map.get("oldEmail");
+        String newEmail = map.get("newEmail");
+        String checkCode = map.get("checkCode");
+        return userService.changeUserEmail(oldEmail, newEmail, checkCode);
     }
 }

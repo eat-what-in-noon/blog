@@ -342,4 +342,53 @@ public class UserServiceImpl implements UserService {
         return Map.of("error_message", "success", "data", tagNames);
     }
 
+    @Override
+    public Map<String, Object> changeUserInfo(Integer id, String username, String phoneNumber, String gender, String avatar) {
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id", id);
+        User user = userMapper.selectOne(queryWrapper);
+        if (username != null) {
+            user.setUsername(username);
+        }
+        if (phoneNumber != null) {
+            user.setPhone_number(phoneNumber);
+        }
+        if (gender != null) {
+            user.setGender(gender);
+        }
+        String resourcePath = "src/main/resources/static/avatar/"; // 静态资源路径
+        String resourceName = user.getAvatar(); // 资源文件名，根据实际情况更改
+        if (resourceName != null) {
+            File fileToDelete = new File(resourcePath + resourceName);
+            if (!fileToDelete.delete()) {
+                return Map.of("error_message", "头像修改失败");
+            }
+        }
+        user.setAvatar(avatar);
+        userMapper.update(user, queryWrapper);
+        return Map.of("error_message", "success");
+    }
+
+    @Override
+    public Map<String, Object> changeUserEmail(String oldEmail, String newEmail, String checkCode) {
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("email", oldEmail);
+        User user = userMapper.selectOne(queryWrapper);
+        if (user == null) {
+            return Map.of("error_message", "该邮箱未绑定用户，请重新输入");
+        }
+        String trueCode = redisTemplate.opsForValue().get("email:" + oldEmail).toString().substring(9, 15);
+        if (trueCode == null) {
+            return Map.of("error_message", "验证码过期,请重新输入");
+        }
+        if (trueCode.equals(checkCode)) {
+            redisTemplate.delete("email:" + oldEmail);
+            user.setEmail(newEmail);
+            userMapper.update(user, queryWrapper);
+            return Map.of("error_message", "success");
+        } else {
+            return Map.of("error_message", "验证码错误，请重新输入");
+        }
+    }
+
 }
