@@ -58,6 +58,16 @@ public class ArticleServiceImpl implements ArticleService {
         return Map.of("error_message", "success", "data", articleId);
     }
 
+    // 删除文章函数具体逻辑
+    @Override
+    public Map<String, Object> deleteArticle(Integer id) {
+        QueryWrapper<Article> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id", id);
+        articleMapper.delete(queryWrapper);
+        return Map.of("error_message", "success");
+    }
+
+
     // 为文章添加标签函数具体逻辑
     @Override
     public Map<String, Object> addTagToArticle(String tagName, Integer articleId) {

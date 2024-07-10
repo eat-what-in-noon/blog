@@ -24,6 +24,12 @@ public class ArticleController {
         return articleService.addArticle(article);
     }
 
+    @DeleteMapping("/deleteArticle")
+    public Map<String, Object> deleteArticle(@RequestBody Map<String, String> map) {
+        Integer id = Integer.valueOf(map.get("id"));
+        return articleService.deleteArticle(id);
+    }
+
     // 为文章添加标签接口
     // 接收参数为JSON，要求JSON中包含标签名和文章id
     // 返回参数为JSON，其中error_message为提示信息，正常运行时为success；发生错误时则是对应错误。无data
