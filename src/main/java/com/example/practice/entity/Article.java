@@ -19,4 +19,5 @@ public class Article {
     private Integer authorId;
     private Integer categoryId;
     private String cover;
+    private String lastUpdateDate;
 }

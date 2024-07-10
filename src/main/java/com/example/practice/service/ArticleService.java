@@ -13,6 +13,9 @@ public interface ArticleService {
     // 删除文章函数接口
     Map<String, Object> deleteArticle(Integer id);
 
+    // 修改文章函数接口
+    Map<String, Object> changeArticle(Integer id, String content);
+
     // 为文章添加标签函数接口
     Map<String, Object> addTagToArticle(String tagName, Integer articleId);
 

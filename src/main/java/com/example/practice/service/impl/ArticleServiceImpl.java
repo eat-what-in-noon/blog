@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -65,6 +66,17 @@ public class ArticleServiceImpl implements ArticleService {
         queryWrapper.eq("id", id);
         articleMapper.delete(queryWrapper);
         return Map.of("error_message", "success");
+    }
+
+    // 修改文章函数具体逻辑
+    @Override
+    public Map<String, Object> changeArticle(Integer id, String content) {
+        QueryWrapper<Article> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id", id);
+        Article article = articleMapper.selectOne(queryWrapper);
+        article.setContent(content);
+        article.setLastUpdateDate(LocalDateTime.now().toString());
+        return Map.of("error_message", "success", "data", article);
     }
 
 

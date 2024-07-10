@@ -24,10 +24,20 @@ public class ArticleController {
         return articleService.addArticle(article);
     }
 
+    // 删除文章接口
+    // 接收参数为JSON，要求JSON中包含article的id信息和修改后的文章内容content
+    // 返回参数为JSON，其中error_message为提示信息，正常运行时为success；发生错误时则是对应错误。data为修改后的文章所有信息
     @DeleteMapping("/deleteArticle")
     public Map<String, Object> deleteArticle(@RequestBody Map<String, String> map) {
         Integer id = Integer.valueOf(map.get("id"));
         return articleService.deleteArticle(id);
+    }
+
+    @PutMapping("/changeArticle")
+    public Map<String, Object> changeArticle(Map<String, String> map) {
+        Integer id = Integer.valueOf(map.get("id"));
+        String content = map.get("content");
+        return articleService.changeArticle(id, content);
     }
 
     // 为文章添加标签接口
