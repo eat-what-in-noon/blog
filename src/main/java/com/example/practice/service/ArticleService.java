@@ -33,4 +33,7 @@ public interface ArticleService {
 
     // 查找文章函数接口
     Map<String, Object> findArticle(String title);
+
+    // 判断用户是否给某篇文章点赞接口
+    Boolean checkLike(Integer articleId, Integer userId);
 }

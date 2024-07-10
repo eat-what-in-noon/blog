@@ -3,6 +3,7 @@ package com.example.practice.controller;
 import com.example.practice.entity.Article;
 import com.example.practice.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -94,5 +95,13 @@ public class ArticleController {
     @GetMapping("/findArticle")
     public Map<String, Object> findArticle(@RequestParam String title) {
         return articleService.findArticle(title);
+    }
+
+    // 判断用户是否给某篇文章点赞接口
+    // 接收参数为Param，要求Param中包含文章articleId信息和用户userId信息
+    // 返回参数为Boolean，其中true表示点赞了，false表示没点赞
+    @GetMapping("/checkLike")
+    public Boolean checkLike(@RequestParam Integer articleId, @RequestParam Integer userId) {
+        return articleService.checkLike(articleId, userId);
     }
 }

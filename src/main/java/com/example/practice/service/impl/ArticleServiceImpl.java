@@ -13,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class ArticleServiceImpl implements ArticleService {
@@ -105,7 +104,7 @@ public class ArticleServiceImpl implements ArticleService {
         List<String> tagNames = new ArrayList<>();
         for (ArticleTag articleTag : articleTags) {
             QueryWrapper<Tag> tagQueryWrapper = new QueryWrapper<>();
-            tagQueryWrapper.eq("tag_id", articleTag.getTagId());
+            tagQueryWrapper.eq("id", articleTag.getTagId());
             tagNames.add(tagMapper.selectOne(tagQueryWrapper).getTagName());
         }
         return Map.of("error_message", "success", "data", article
@@ -272,6 +271,18 @@ public class ArticleServiceImpl implements ArticleService {
         }
         return Map.of("error_message", "success", "data", articles
                 , "commentCnt", commentCnt, "likeCnt", likeCnt, "tagNames", tagNames);
+    }
+
+    @Override
+    public Boolean checkLike(Integer articleId, Integer userId) {
+        QueryWrapper<ArticleLike> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("article_id", articleId).eq("user_id", userId);
+        ArticleLike articleLike = articleLikeMapper.selectOne(queryWrapper);
+        if (articleLike != null) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 

@@ -11,7 +11,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -60,6 +59,10 @@ public class UserServiceImpl implements UserService {
     // 定义标签数据表操作变量
     @Autowired
     private TagMapper tagMapper;
+
+    // 定义评论数据表操作变量
+    @Autowired
+    private CommentMapper commentMapper;
 
     // 密码登陆处理函数具体逻辑
     @Override
@@ -290,12 +293,31 @@ public class UserServiceImpl implements UserService {
     public Map<String, Object> getAllArticle(Integer id) {
         QueryWrapper<Article> queryWrapper = new QueryWrapper<>();
         List<Article> articles = articleMapper.selectList(queryWrapper);
+        List<Integer> commentCnt = new ArrayList<>();
+        List<Integer> likeCnt = new ArrayList<>();
+        List<List<String>> tagNames = new ArrayList<>();
         for (Article article : articles) {
-            if (Objects.equals(article.getAuthorId(), id)) {
-                article.setContent(null);
+            article.setContent(null);
+            // 查询文章对应的点赞数和评论数以及标签
+            QueryWrapper<Comment> commentQueryWrapper = new QueryWrapper<>();
+            QueryWrapper<ArticleLike> articleLikeQueryWrapper = new QueryWrapper<>();
+            QueryWrapper<ArticleTag> articleTagQueryWrapper = new QueryWrapper<>();
+            commentQueryWrapper.eq("article_id", article.getId());
+            articleLikeQueryWrapper.eq("article_id", article.getId());
+            articleTagQueryWrapper.eq("article_id", article.getId());
+            commentCnt.add(commentMapper.selectList(commentQueryWrapper).size());
+            likeCnt.add(articleLikeMapper.selectList(articleLikeQueryWrapper).size());
+            List<ArticleTag> articleTags = articleTagMapper.selectList(articleTagQueryWrapper);
+            List<String> stringList = new ArrayList<>();
+            for (ArticleTag articleTag : articleTags) {
+                QueryWrapper<Tag> tagQueryWrapper = new QueryWrapper<>();
+                tagQueryWrapper.eq("id", articleTag.getTagId());
+                stringList.add(tagMapper.selectOne(tagQueryWrapper).getTagName());
             }
+            tagNames.add(stringList);
         }
-        return Map.of("error_message", "success", "data", articles);
+        return Map.of("error_message", "success", "data", articles
+                , "commentCnt", commentCnt, "likeCnt", likeCnt, "tagNames", tagNames);
     }
 
     // 获取用户文章的所有标签函数具体逻辑
