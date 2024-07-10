@@ -2,10 +2,7 @@ package com.example.practice.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.practice.entity.*;
-import com.example.practice.mapper.ArticleLikeMapper;
-import com.example.practice.mapper.ArticleMapper;
-import com.example.practice.mapper.FollowMapper;
-import com.example.practice.mapper.UserMapper;
+import com.example.practice.mapper.*;
 import com.example.practice.service.UserService;
 import com.example.practice.service.impl.utils.UserDetailsImpl;
 import com.example.practice.utils.JwtUtil;
@@ -56,6 +53,14 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private ArticleMapper articleMapper;
 
+    // 定义文章标签关系表操作变量
+    @Autowired
+    private ArticleTagMapper articleTagMapper;
+
+    // 定义标签数据表操作变量
+    @Autowired
+    private TagMapper tagMapper;
+
     // 密码登陆处理函数具体逻辑
     @Override
     public Map<String, Object> login(String username, String password) {
@@ -97,6 +102,7 @@ public class UserServiceImpl implements UserService {
 
             // 生成 JWT token
             String jwt = JwtUtil.createJWT(user.getId().toString());
+            redisTemplate.opsForValue().set("user:" + user.getUsername(), user, 1, TimeUnit.DAYS);
             return Map.of("error_message", "success", "token", jwt, "data", user);
         } else {
             return Map.of("error_message", "验证码错误，请重新输入");
@@ -290,6 +296,28 @@ public class UserServiceImpl implements UserService {
             }
         }
         return Map.of("error_message", "success", "data", articles);
+    }
+
+    // 获取用户文章的所有标签函数具体逻辑
+    @Override
+    public Map<String, Object> getAllTag(Integer id) {
+        QueryWrapper<Article> queryWrapper = new QueryWrapper<>();
+        List<Article> articles = articleMapper.selectList(queryWrapper);
+        List<String> tagNames = new ArrayList<>();
+        for (Article article : articles) {
+            QueryWrapper<ArticleTag> articleTagQueryWrapper = new QueryWrapper<>();
+            articleTagQueryWrapper.eq("article_id", article.getId());
+            List<ArticleTag> articleTags = articleTagMapper.selectList(articleTagQueryWrapper);
+            for (ArticleTag articleTag : articleTags) {
+                QueryWrapper<Tag> tagQueryWrapper = new QueryWrapper<>();
+                tagQueryWrapper.eq("id", articleTag.getTagId());
+                String tagName = tagMapper.selectOne(tagQueryWrapper).getTagName();
+                if (!tagNames.contains(tagName)) {
+                    tagNames.add(tagName);
+                }
+            }
+        }
+        return Map.of("error_message", "success", "data", tagNames);
     }
 
 }

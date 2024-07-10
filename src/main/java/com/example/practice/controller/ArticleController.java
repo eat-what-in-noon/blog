@@ -58,7 +58,7 @@ public class ArticleController {
 
     // 根据tag获取文章信息接口
     // 接收参数为Param，要求Param中包含tag名tagName
-    // 返回参数为JSON，其中error_message为提示信息，正常运行时为success；发生错误时则是对应错误。data为有该tag的所有文章信息
+    // 返回参数为JSON，其中error_message为提示信息，正常运行时为success；发生错误时则是对应错误。data为有该tag的所有文章的信息
     @GetMapping("/getArticleInfoByTag")
     public Map<String, Object> getArticleInfoByTag(@RequestParam String tagName) {
         return articleService.getArticleInfoByTag(tagName);
@@ -66,7 +66,7 @@ public class ArticleController {
 
     // 根据category获取文章信息接口
     // 接收参数为Param，要求Param中包含category名categoryName
-    // 返回参数为JSON，其中error_message为提示信息，正常运行时为success；发生错误时则是对应错误。data为在该category下所有文章信息
+    // 返回参数为JSON，其中error_message为提示信息，正常运行时为success；发生错误时则是对应错误。data为在该category下所有文章的信息
     @GetMapping("/getArticleInfoByCategory")
     public Map<String, Object> getArticleInfoByCategory(@RequestParam String categoryName) {
         return articleService.getArticleInfoByCategory(categoryName);
@@ -74,7 +74,7 @@ public class ArticleController {
 
     // 获取所有文章信息接口
     // 无接收参数
-    // 返回参数为JSON，其中error_message为提示信息，正常运行时为success；发生错误时则是对应错误。data为所有文章的id和title
+    // 返回参数为JSON，其中error_message为提示信息，正常运行时为success；发生错误时则是对应错误。data为所有文章的信息
     @GetMapping("/getAllArticle")
     public Map<String, Object> getAllArticle() {
         return articleService.getAllArticle();
@@ -86,5 +86,13 @@ public class ArticleController {
     @GetMapping("/getComment")
     public Map<String, Object> getComment(@RequestParam Integer id) {
         return articleService.getComment(id);
+    }
+
+    // 模糊查询文章标题
+    // 接收参数为Param，要求Param中包含标题title信息
+    // 返回参数为JSON，其中error_message为提示信息，正常运行时为success；发生错误时则是对应错误。data为查询到的文章的所有信息
+    @GetMapping("/findArticle")
+    public Map<String, Object> findArticle(@RequestParam String title) {
+        return articleService.findArticle(title);
     }
 }

@@ -30,4 +30,7 @@ public interface ArticleService {
 
     // 获得文章所有评论的函数接口
     Map<String, Object> getComment(Integer id);
+
+    // 查找文章函数接口
+    Map<String, Object> findArticle(String title);
 }

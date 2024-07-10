@@ -153,4 +153,12 @@ public class UserController {
     public Map<String, Object> getAllArticle(@RequestParam Integer id) {
         return userService.getAllArticle(id);
     }
+
+    // 获取用户文章的所有标签接口
+    // 接收参数为Param，要求Param中包含用户id信息
+    // 返回参数为JSON，其中error_message为提示信息，正常运行时为success；发生错误时则是对应错误。data为用户所有使用过的所有tag的tagName
+    @GetMapping("/getAllTag")
+    public Map<String, Object> getAllTag(@RequestParam Integer id) {
+        return userService.getAllTag(id);
+    }
 }

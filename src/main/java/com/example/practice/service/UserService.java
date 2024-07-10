@@ -54,4 +54,7 @@ public interface UserService {
 
     // 获取用户写的所有文章接口
     Map<String, Object> getAllArticle(Integer id);
+
+    // 获取用户文章的所有标签接口
+    Map<String, Object> getAllTag(Integer id);
 }
