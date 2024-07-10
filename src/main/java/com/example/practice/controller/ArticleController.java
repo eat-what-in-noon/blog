@@ -82,8 +82,8 @@ public class ArticleController {
     }
 
     // 获取所有文章所有评论
-    // 接收参数为Param，要求Param中包含评论id信息
-    // 返回参数为JSON，其中error_message为提示信息，正常运行时为success；发生错误时则是对应错误。data为所有评论所有属性
+    // 接收参数为Param，要求Param中包含文章id信息
+    // 返回参数为JSON，其中error_message为提示信息，正常运行时为success；发生错误时则是对应错误。data为所有评论所有属性,users为所有评论对应的发表者信息
     @GetMapping("/getComment")
     public Map<String, Object> getComment(@RequestParam Integer id) {
         return articleService.getComment(id);

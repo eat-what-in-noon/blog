@@ -40,6 +40,10 @@ public class ArticleServiceImpl implements ArticleService {
     @Autowired
     private ArticleLikeMapper articleLikeMapper;
 
+    // 定义User数据表操作变量
+    @Autowired
+    private UserMapper userMapper;
+
     // 定义Tag功能操作变量
     @Autowired
     private TagService tagService;
@@ -231,11 +235,21 @@ public class ArticleServiceImpl implements ArticleService {
     public Map<String, Object> getComment(Integer id) {
         QueryWrapper<Comment> queryWrapper = new QueryWrapper<>();
         List<Comment> comments = commentMapper.selectList(queryWrapper);
+        List<User> users = new ArrayList<>();
         if (comments == null) {
             return Map.of("error_message", "该文章暂时没有评论");
         }
-        comments.removeIf(comment -> !Objects.equals(comment.getArticleId(), id));
-        return Map.of("error_message", "success", "data", comments);
+        for (Comment comment : comments) {
+            if (!Objects.equals(comment.getArticleId(), id)) {
+                comments.remove(comment);
+            } else {
+                QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
+                userQueryWrapper.eq("id", comment.getAuthorId());
+                User user = userMapper.selectOne(userQueryWrapper);
+                users.add(user);
+            }
+        }
+        return Map.of("error_message", "success", "data", comments, "users", users);
     }
 
     @Override
