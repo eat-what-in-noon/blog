@@ -36,8 +36,10 @@ public class ArticleController {
     @PutMapping("/changeArticle")
     public Map<String, Object> changeArticle(Map<String, String> map) {
         Integer id = Integer.valueOf(map.get("id"));
+        String title = map.get("title");
         String content = map.get("content");
-        return articleService.changeArticle(id, content);
+        String cover = map.get("cover");
+        return articleService.changeArticle(id, title, content, cover);
     }
 
     // 为文章添加标签接口

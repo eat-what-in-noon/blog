@@ -70,12 +70,27 @@ public class ArticleServiceImpl implements ArticleService {
 
     // 修改文章函数具体逻辑
     @Override
-    public Map<String, Object> changeArticle(Integer id, String content) {
+    public Map<String, Object> changeArticle(Integer id, String title, String content, String cover) {
         QueryWrapper<Article> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("id", id);
         Article article = articleMapper.selectOne(queryWrapper);
-        article.setContent(content);
+        if (title != null) {
+            article.setTitle(title);
+        }
+        if (content != null) {
+            article.setContent(content);
+        }
+        String resourcePath = "src/main/resources/static/cover/"; // 静态资源路径
+        String resourceName = article.getCover(); // 资源文件名，根据实际情况更改
+        if (resourceName != null) {
+            File fileToDelete = new File(resourcePath + resourceName);
+            if (!fileToDelete.delete()) {
+                return Map.of("error_message", "封面修改失败");
+            }
+        }
+        article.setCover(cover);
         article.setLastUpdateDate(LocalDateTime.now().toString());
+        articleMapper.update(article, queryWrapper);
         return Map.of("error_message", "success", "data", article);
     }
 
